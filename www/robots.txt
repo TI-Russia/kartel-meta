@@ -1,0 +1,11 @@
+User-agent: *
+Crawl-delay: 1
+Host: kartel.declarator.org
+Disallow: /iapi/
+Disallow: /meta.php
+Disallow: /contractsex.php
+Disallow: /groups.php
+Disallow: /metahits.php
+Disallow: /cartels.php
+Disallow: /purchases.php
+Disallow: /concurents.php

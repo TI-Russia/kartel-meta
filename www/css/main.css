@@ -1,0 +1,66 @@
+BODY {FONT-SIZE: 10px; COLOR: #000000; MARGIN: 0px}
+TD {FONT-SIZE: 12px; COLOR: #000000; FONT-FAMILY: Tahoma, Arial, Verdana}
+A {
+	font-family: Tahoma, Arial, Verdan;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #4E90CB;
+	cursor: hand;}
+
+.timer {
+	font-family: Tahoma, Arial, Verdana;
+	font-size: 9px;
+	font-weight: bold;
+	color: #2694D9;}
+
+.blueBG {background-color: #D7EDFB;}
+.blueBGDark {background-color: #C5E5F9;}
+
+.greenBG {background-color: #EEEEEE;}
+.greenBGDark {background-color: #CCCCCC;}
+
+.whiteBG {background-color: #FFFFFF;}
+
+.tqBG {background-color: #DDDDDD;}
+.tqBGDark {background-color: #EEEEEE;}
+
+.glukBG {background-color: #DDDDDD;}
+.glukBGDark {background-color: #EEEEEE;}
+
+.ideaBG {background-color: #DDDDDD;}
+.ideaBGDark {background-color: #EEEEEE;}
+
+.tripBG {background-color: #DDDDDD;}
+.tripBGDark {background-color: #EEEEEE;}
+
+.hintBG {background-color: #FFFFD0;}
+
+.menuTOP {
+	font-family: Tahoma, Arial, Verdana;
+	font-size: 13px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #4E90CB;}
+.smallText {
+	font-family: Tahoma, Arial, Verdana;
+	font-size: 11px;
+	color: #000000;}
+.editText {
+	font-family: Tahoma, Arial, Verdana;
+	background-color: #FFFFFF;
+	font-size: 12px;
+	padding: 0px 0px 0px 3px;}
+.button {
+	font-family: Tahoma, Arial, Verdana;
+	background-color: #2694D9;
+	font-size: 12px;
+	border: 3px solid #2694D9;}
+
+.topborder {border-top: 1px solid #888888;}
+.bottomborder {border-bottom: 1px solid #888888;}
+.tb11 {border-top: 1px solid #888888;border-left: 1px solid #888888;}
+.tb12 {border-top: 1px solid #888888;border-left: 2px solid #888888;}
+.tb21 {border-top: 2px solid #888888;border-left: 1px solid #888888;}
+.tb22 {border-top: 2px solid #888888;border-left: 2px solid #888888;}
+
