@@ -9,6 +9,7 @@ use Exporter 'import';
 #use URI::Escape;
 use LWP::UserAgent;
 use Logger;
+use Tester;
 
 our @EXPORT = qw(getf $UserAgent);
 our $VERSION = '1.00';
@@ -30,6 +31,7 @@ sub getf($)
    my $content=$response->decoded_content;
    if (length $content)
    {
+      $cdisp='' unless($cdisp);
       Logger::log("Content-type: $ctype, Content-disposition: $cdisp",2);
       if($ctype=~/^application\/download/ && $cdisp=~/filename="([^"]+(\.\w+))"/)
       {
@@ -37,12 +39,13 @@ sub getf($)
        my $fn='tmp/'.$_[0].$e;
        #my $gfn=uri_unescape($1);
        my $gfn=$1;
-       $gfn =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;
+       $gfn=~s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;
+       $gfn=~s/[\/\\]/_/g;
        $gfn=Encode::decode('utf8', $gfn);
        $gfn=~s/\s\s+/ /g;
        while(length($gfn)>199)
        {
-         s/^\.+//;
+         $gfn=~s/^\.\.+//;
          my $diff=length($gfn)-199;
          $gfn=~/^(.+)\.([^\.]+)$/;
          my $fp=substr($1,0,length($1)-$diff);
@@ -57,15 +60,15 @@ sub getf($)
        return \%result;
       }else{
        Logger::log("File content: $content",1);
-       if($content=~/\{.+не найден/)
+       if(Tester::test($content))
        {
-        %result=('status',404);
+        %result=('status',0);
         return \%result;
        }
-      }
-      Logger::log("Unknown result");
-      %result=('status',500);
-      return \%result;
+    }
+    Logger::log("Unknown result");
+    %result=('status',500);
+    return \%result;
    }
    Logger::log("Zero-sized content");
    %result=('status',500);

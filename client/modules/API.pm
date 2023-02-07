@@ -17,7 +17,7 @@ our $VERSION = '1.00';
 our %exts = ();
 our $ver=0;
 our $wait=64;
-our $itercount=3;
+our $itercount=7;
 our $primary=1;
 
 sub geta($)

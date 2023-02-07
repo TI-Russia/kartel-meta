@@ -14,15 +14,16 @@ use Encode qw(:all);
 our @EXPORT = qw(get);
 our $VERSION = '1.00';
 
-my %badtags = ('ZipCRC', 1, 'CompObjUserType', 1, 'WordDocumentBodySectPRPictBinData', 1, 'Hyperlinks', 1);
+my %badtags = ('ZipCRC', 1, 'CompObjUserType', 1, 'WordDocumentBodySectPRPictBinData', 1, 'Hyperlinks', 1, 'FileName', 1, 'ZipFileName', 1, 'Directory', 1, 'HLinks', 1);
 
 sub get($$)
 {
  my $f = $_[0];
  my $fn = $_[1];
+ $fn=~s/"//g;
  my $result="{\"filename\": \"$fn\",\"tags\":\"";
 # utf8::upgrade($result);
- if($f=~/\.(\w+)$/&&$f!~/^~\$/)
+ if($f=~/\.(\w+)$/&&$fn!~/^~\$/&&$fn!~/[\\\/]~\$/)
  {
   my $e=lc $1;
   if($e eq 'zip'){
@@ -36,9 +37,12 @@ sub get($$)
    foreach (keys %$info) 
    {
     my $inf=$info->{$_};
-    unless(/\(\d+\)/||$goodtags{$_}||$badtags{$_}||length($_)>2048)
+    $inf=~s/^\s+//;
+    $inf=~s/\s+$//;
+    s/^WordDocumentDocumentProperties//;
+    unless(/\(\d+\)/||(/^WordDocument/&&length($_)>16)||$goodtags{$_}||$badtags{$_}||length($inf)>2048||length($inf)==0)
     {
-     $inf=$fn if($_ eq 'FileName');
+#     $inf=$fn if($_ eq 'FileName');
      $inf=~s/\000/ /;
      $goodtags{$_}=1;
      $inf=~s/&/&amp;/g;
@@ -57,7 +61,7 @@ sub get($$)
    }
    $result.='"}';
   }
- }
+ }else{$result.='"}';}
  unlink $f;
  return $result;
 }

@@ -13,7 +13,11 @@ use File::Basename qw(fileparse);
 use IO::File;
 use Archive::Zip qw/ :ERROR_CODES :CONSTANTS /;
 use Encode qw(:all);
-use Win32::File;
+use if $^O=~/^MSWin/, "Win32/File";
+
+#if($win)
+#  require Win32::File;
+#  Win32::File->import();
 
 our @EXPORT = qw(unzip);
 our $VERSION = '1.00';
@@ -55,11 +59,13 @@ sub unzip($) {
   {
    my $tmp=extractExtra($mem->cdExtraField());
    $tmp=$mem->fileName() unless($tmp);
-   $tmp=~s-\\-/-;
+   $tmp=~s-\\-/-g;
+   $tmp=~s-"-'-g;
+   $tmp=~s/[\x00-\x1f]+/ /g;
    unless(utf8::is_utf8($tmp)){$tmp=decode('cp866',$tmp);}
    Logger::log($tmp,1);
    my ($name, $path, $ext) = fileparse($tmp, qr/\.[^.]*$/);
-   if($name&&$ext&&API::ext($ext))
+   if($name&&$ext&&API::ext($ext)&&$name!~/^~\$/&&$name!~/[\\\/]~\$/)
    {
     Logger::log("$path,$name,$ext",1);
     my $destfile = "tmp/$fnum$ext";
@@ -68,7 +74,7 @@ sub unzip($) {
     {
       my $attrib;
       Win32::File::GetAttributes($destfile, $attrib);
-      Win32::File::SetAttributes($destfile, $attrib & !(Win32::File::READONLY|Win32::File::HIDDEN));
+      Win32::File::SetAttributes($destfile, $attrib & !(Win32::File::READONLY()|Win32::File::HIDDEN()));
     }
     my $tempres=Info::get($destfile,$tmp);
     if($tempres)

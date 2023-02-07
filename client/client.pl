@@ -20,7 +20,7 @@ binmode(STDOUT,':encoding(cp866)');
 API::issecond() if($#ARGV!=-1);
 }
 
-my $version=2210030;
+my $version=2212122;
 
 my $id;
 my @list;
@@ -32,7 +32,7 @@ my $RAND=2200;
 my $UA='Web browser 8.5';
 my %config;
 my $send=1;
-
+my $tagslen=0;
 
 if(-f 'update.lock')
 {
@@ -48,8 +48,17 @@ sub send()
   my $tags="{\"id\":\"$id\",\"list\":[".
      join(",\n",values %outbox).']}';
 #  log($tags,1);
-  $res=API::put_list($id,$tags) if($send);
+  if($send)
+  {
+   $res=API::put_list($id,$tags)
+  }else{
+   open F,'>json';
+   binmode F;
+   print F $tags;
+   close F;
+  }
   %outbox=();
+  $tagslen=0;
  }
  return $res;
 }
@@ -122,16 +131,23 @@ while(1)
     my $file=Getter::getf($val);
     my %file=%$file;
     my $stat=$file{'status'};
-    if(defined($stat)&&($stat==0))
+    if(defined($stat)&&($stat==0)&&defined($file{'filename'}))
     {
-     my $fn=$file{'filename'};
      #$fn=Encode::decode_utf8($fn);
+     my $fn=$file{'filename'};
      Logger::log("ID=$val STATUS=$stat EXT=$file{'ext'} FILE=$fn",chr(13).'#'.(++$N));
      my $tags=Info::get("tmp/$val$file{'ext'}",$fn);
      $outbox{$val}="{\"id\":\"$val\",\"status\":0,\"list\":[$tags]}";
+     $tagslen+=length($tags)+99;
     }else{
      Logger::log("ID=$val STATUS=$stat",'File #'.(++$N).' error: '.$stat);
      $outbox{$val}="{\"id\":\"$val\",\"status\":$stat}";
+     $tagslen+=99;
+    }
+    if($tagslen>4_000_000)
+    {
+     Logger::log("Tagsize is {$tagslen}, forcing sending");
+     &send();
     }
     last if(API::lsleep($WAIT,$RAND,1));
    }
