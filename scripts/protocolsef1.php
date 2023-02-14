@@ -164,7 +164,7 @@ global $flag,$nno,$protocolnumber,$protocolef2;
 	global $lot,$appd,$appno,$apprate,$price,$admit; //locals
 	global $lots,$ad,$an,$ar,$wp,$adm;               //arrays
 
-$admit="";$protocolnumber='';$protocolef2='';
+$admit="";$protocolnumber='';$protocolef2='';$nno='';
 $lots=array();$ad=array();$an=array();$ar=array();$wp=array();$adm=array();
 $flag=0;$price='';$taglevel=0;$appd="";$appno="";$apprate=0;$lot=1;$admit='';
   xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, true);

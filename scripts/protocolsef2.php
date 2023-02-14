@@ -156,7 +156,7 @@ global $flag,$nno,$protocolnumber,$protocolef2;
 $admit="";
 $lots=array();$ad=array();$an=array();$ar=array();$wp=array();$adm=array();
 $flag=0;$price='';$taglevel=0;$appd="";$appno="";$apprate=0;$lot=1;$admit='';
-$protocolnumber='';$protocolef2='';
+$protocolnumber='';$protocolef2='';$nno='';
   xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, true);
   xml_set_element_handler($parser, "startEf2lement", "endEf2Element");
   xml_set_character_data_handler($parser,"parseEf2Data");

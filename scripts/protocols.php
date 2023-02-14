@@ -49,6 +49,15 @@ if ((strpos($t,"rotoco")!==false)&&(strpos($t,"Month")==false))
 			        exec_sql($sql_id,$fd);		
 	        		unset($fd);unset($buf);
 			 } else
+				if (
+ 				(strpos($fn,"2020Final")!==false)
+				)
+              		 { 
+		 		$buf=$zip->getfromindex($i);
+     				$fd=XmlProtocol2020Parse($buf);
+			        exec_sql2020($sql_id,$fd);		
+	        		unset($fd);unset($buf);
+			 } else
 			        if ((strpos($fn,"lPP_")!==false)
 				||(strpos($fn,"lEF2")!==false))
                          { 
@@ -64,16 +73,7 @@ if ((strpos($t,"rotoco")!==false)&&(strpos($t,"Month")==false))
      				$fd=XmlProtocolCancelParse($buf);
 			        exec_sql_cancel($sql_id,$fd);		
 	        		unset($fd);unset($buf);
-			 } else
-				if (
- 				(strpos($fn,"2020Final")!==false)
-				)
-              		 { 
-		 		$buf=$zip->getfromindex($i);
-     				$fd=XmlProtocol2020Parse($buf);
-			        exec_sql2020($sql_id,$fd);		
-	        		unset($fd);unset($buf);
-			 } else
+			 }  else
 				if (
  				(strpos($fn,"EF1")!==false)
 				)

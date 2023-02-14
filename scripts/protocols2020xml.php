@@ -82,7 +82,7 @@ global $taglevel;
 
   function parse2020Data ($parser, $data)
     {
-        global $curtag,$taglevel,$flag,$protocolnumber;
+        global $curtag,$taglevel,$flag,$protocolnumber,$protocolef1;
 	global $fp,$rn,$nno;
 	global $lot,$appd,$appno,$apprate,$price,$admit;
 
@@ -114,7 +114,12 @@ global $taglevel;
 		};break;
        case 12:{
 		  switch ($curtag)
-		 {
+		 {	
+		  case 'NS9:FOUNDATIONDOCNUMBEREXTERNAL':$protocolef1=$data;break;
+		  case 'NS9:DOCNUMBEREXTERNAL':$protocolnumber=$data;break;
+
+		  case 'NS9:PURCHASENUMBER':
+      		  case 'PURCHASENUMBER':$nno=$data;break;
  		  case 'LOTNUMBER':$lot=$data;break;	
 		  case 'NS9:APPDT':
 		  case 'NS7:APPDT':
@@ -164,7 +169,7 @@ global $taglevel;
 function XmlProtocol2020Parse (&$d)
 {
 $parser = xml_parser_create();
-global $flag,$nno,$protocolnumber,$protocolef2;
+global $flag,$nno,$protocolnumber,$protocolef1;
 //arrays
 	global $lot,$appd,$appno,$apprate,$price,$admit; //locals
 	global $lots,$ad,$an,$ar,$wp,$adm;               //arrays
@@ -172,12 +177,12 @@ global $flag,$nno,$protocolnumber,$protocolef2;
 $admit="";
 $lots=array();$ad=array();$an=array();$ar=array();$wp=array();$adm=array();
 $flag=0;$price='';$taglevel=0;$appd="";$appno="";$apprate=0;$lot=1;$admit='';
-$protocolnumber='';$protocolef2='';
+$protocolnumber='';$protocolef1='';$nno='';
   xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, true);
   xml_set_element_handler($parser, "start2020Element", "end2020Element");
   xml_set_character_data_handler($parser,"parse2020Data");
   xml_parse($parser, $d, true);
   xml_parser_free($parser);
- return array(to1251($nno),$lots,$an,$ad,$ar,$wp,$adm,to1251($protocolnumber),to1251($protocolef2));
+ return array(to1251($nno),$lots,$an,$ad,$ar,$wp,$adm,to1251($protocolnumber),to1251($protocolef1));
 }
 ?>

@@ -161,7 +161,7 @@ global $taglevel;
 		  case 'NS7:OFFER':if ($rn==1)
 				{ 
 				//echo '!!!offer:'.$INNt.':'.$data.':'.$appd.':'.$lot."\n";
-				$fp=$data;//addrec();
+				$fp=$data;$rn=0; //addrec();
 			};
 			break;	
 		 }
