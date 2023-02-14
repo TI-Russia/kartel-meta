@@ -174,8 +174,20 @@ if (($xcid=='')and($gid==''))
 
 };//      echo $if;
 
-      $sql="select top ".$maxlist." a.purchasenumber,a.coid,a.maxprice,a.date,a.status,a.cphone,a.cemail,a.lot,a.discount,a.okpd,a.type,a.oid,a.name,a.percents,orgs.inn,orgs.name,o2.inn,o2.name 
-      from (select  *,(case when maxprice=0 then NULL else  (maxprice-discount)/maxprice*100 end) as percents  from zakupki_work.dbo.purchasesLT) as a inner join orgs on (a.coid=orgs.oid) left join orgs o2 on (a.oid=o2.oid)   where ".$if."  a.date > '2014-01-01' order by a.date";
+//      $sql="select top ".$maxlist." a.purchasenumber,a.coid,a.maxprice,a.date,a.status,a.cphone,a.cemail,a.lot,a.discount,a.okpd,a.type,a.oid,a.name,a.percents,orgs.inn,orgs.name,o2.inn,o2.name 
+//      from (select  *,(case when maxprice=0 then NULL else  (maxprice-discount)/maxprice*100 end) as percents  from zakupki_work.dbo.purchasesLT) as a inner join orgs on (a.coid=orgs.oid) left join orgs o2 on (a.oid=o2.oid)   where ".$if."  a.date > '2014-01-01' order by a.date";
+      $sql="select top ".$maxlist. " * from (select
+a.purchasenumber,a.coid,a.maxprice,a.date,a.status,a.cphone,a.cemail,a.lot,a.discount,a.offers,a.rejected,a.okpd,a.type,a.oid,a.name,a.percents,orgs.inn,orgs.name as oname,o2.inn as oinn,o2.name as o2name,p.sum,a.itemprice,
+
+iif(a.itemprice>0 and a.itemprice/(a.maxprice+0.0001)>10,(a.itemprice-iif(p.sum=0,maxprice,p.sum ) )/a.itemprice*100,iif(a.maxprice=0, NULL ,(a.maxprice-iif(p.sum=0,maxprice,p.sum ))/a.maxprice*100)) as percentsex
+ 
+ from (
+ select *,(case when maxprice=0 then NULL else (maxprice-discount)/maxprice*100 end) as percents from zakupki_work.dbo.purchasesLT
+ ) as a 
+ inner join orgs on (a.coid=orgs.oid) left join orgs o2 on (a.oid=o2.oid) 
+ left join zakupki.dbo.concurents as p on (p.purchasenumber=a.purchasenumber and p.place=1 and p.active=1)
+ ) as a where ".$if."  a.date > '2014-01-01' order by a.date";
+
 //echo $sql;
 //header	
 $p="<tr><th> Дата </th><th>Процедура</th><th> Закупка </th><th>№ лота</th><th>ОКПД</th><th>НМЦК </th><th>Цена контракта</th><th>% снижения</th><th>Предмет закупки</th><th>ИНН Заказчика<br>(Разместившего заказ)</th><th>Название заказчика<br>(разместившего заказ)</th><th>Инн поставщика</th><th>Название поставщика</th></tr>";

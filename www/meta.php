@@ -66,8 +66,11 @@ $stmt = sqlsrv_query ($db, $sql);
 		{  echo ($sql.'<br>');
 			    die(toutf(sqlsrv_errors()[0][2]));
                 }
-$res='<table border=1>';
+$res=
+'<a href=metaall.php?purnumber='.$purchase.'> Все метаданные по закупке</a>'.
+'<table border=1>';$ok=0;
 while($row = sqlsrv_fetch_array($stmt)) {
+    $ok=1;	
     $res=$res.'<tr><td><a href="https://zakupki.gov.ru/44fz/filestore/public/1.0/download/priz/file.html?uid='.$row[4].'">'.toutf($row[0]).'</a></td><td>'.
 	 toutf($row[1]).'</td><td>'.
          toutf($row[2]).'</td><td>'.
@@ -75,7 +78,7 @@ while($row = sqlsrv_fetch_array($stmt)) {
    }
 $res=$res.'</table>';
  sqlsrv_free_stmt($stmt);
-  
+if ($ok==0) {$res='&nbsp;';};
   return $res;
 };
 
@@ -111,7 +114,7 @@ if ($download!=1)
 //------------ Шапка сайта
 //echo ">>>>>>".htmlspecialchars($metatag)."<<<<<<";
 echo '<form method="get" action="/meta.php">
-	Вид конкурсной процедуры    :   <input name="ptype" list="ptype" value="'.$ptype.'" '.
+	Способ закупки   :   <input name="ptype" list="ptype" value="'.$ptype.'" '.
  $inputstyle.'
 
    <datalist id="ptype">
@@ -156,7 +159,7 @@ echo '<form method="get" action="/meta.php">
  </datalist>'.
 	'Метаданные:<input name="metatag" value="'.htmlspecialchars($metatag).'" '.$inputstyle.
 	'Обьект закупки:<input name="subject" value="'.htmlspecialchars($purname).'" '.$inputstyle.
-	'<p>Процент снижения НМЦК от:<input name="mindiscount" value="'.$mindiscount.'" '.$inputstyle.
+	'<p>Процент снижения НМЦК(Цены единицы) от:<input name="mindiscount" value="'.$mindiscount.'" '.$inputstyle.
 	'До:<input name="maxdiscount" value="'.$maxdiscount.'" '.$inputstyle.
 	'Номер закупки:<input name="purnumber" value="'.$purnumber.'" '.$inputstyle.
 	'<p>'.
@@ -183,10 +186,10 @@ if (($xcid=='')and($gid==''))
 
    {  $if1=''; if (($mindiscount!='')&&($mindiscount!="''")) 
  //{$if1='discount>=maxprice*('.$mindiscount.'/100.0) ';};
-   {$if1='a.percents>='.$mindiscount.' '; };
+   {$if1='percentsex>='.$mindiscount.' '; };
 //$percent=($row[2]-$row[8])/$row[2]*100;
       $if2=''; if (($maxdiscount!='')&&($maxdiscount!="''")) 
- {$if2='a.percents<='.$maxdiscount.' '; };
+ {$if2='percentsex<='.$maxdiscount.' '; };
 //{$if2='discount<=maxprice*('.$maxdiscount.'/100.0) ';};
       $ifd1=''; if ($mindate!='') {$ifd1="a.date >="._sql_validate_value($mindate)." ";};
       $ifd2=''; if ($maxdate!='') {$ifd2="a.date <="._sql_validate_value($maxdate)." ";};
@@ -219,16 +222,24 @@ if (strlen($metatag)>0) {
 };
 if (trim($if)=="") {$maxlist=1;};
 //echo '>>'.$if.'<<';
-      $sql="select top ".$maxlist." a.purchasenumber,a.coid,a.maxprice,a.date,a.status,a.cphone,a.cemail,a.lot,a.discount,a.offers,a.rejected,a.okpd,a.type,a.oid,a.name,a.percents,orgs.inn,orgs.name,o2.inn,o2.name,p.sum 
+      $sql="select top ".$maxlist. " * from (select
+a.purchasenumber,a.coid,a.maxprice,a.date,a.status,a.cphone,a.cemail,a.lot,a.discount,a.offers,a.rejected,a.okpd,a.type,a.oid,a.name,a.percents,orgs.inn,orgs.name as oname,o2.inn as oinn,o2.name as o2name,p.sum,a.itemprice,
 
-      from (select  *,(case when maxprice=0 then NULL else  (maxprice-discount)/maxprice*100 end) as percents  from zakupki_work.dbo.purchasesLT) as a 
-	inner join orgs on (a.coid=orgs.oid) left join orgs o2 on (a.oid=o2.oid)
-	left join zakupki.dbo.concurents as p on (p.purchasenumber=a.purchasenumber and p.place=1)
-	   where ".$if."  a.date > '2014-01-01' order by a.date";
+iif(a.itemprice>0 and 
 
-//echo $sql;
+ (a.maxprice-a.discount)<a.itemprice ,
+(a.itemprice-iif(p.sum=0,maxprice,p.sum ) )/a.itemprice*100,iif(a.maxprice=0, NULL ,(a.maxprice-iif(p.sum=0,maxprice,p.sum ))/a.maxprice*100)) as percentsex
+ 
+ from (
+ select *,(case when maxprice=0 then NULL else (maxprice-discount)/maxprice*100 end) as percents from zakupki_work.dbo.purchasesLT
+ ) as a 
+ inner join orgs on (a.coid=orgs.oid) left join orgs o2 on (a.oid=o2.oid) 
+ left join zakupki.dbo.concurents as p on (p.purchasenumber=a.purchasenumber and p.place=1 and p.active=1)
+ ) as a where ".$if."  a.date > '2014-01-01' order by a.date";
+
+//echo $sql.'<br>';
 //header	
-$p="<tr><th> Дата </th><th>Процедура</th><th> Закупка </th><th>№ лота</th><th>Заявок</th><th>Отклонено</th><th>ОКПД</th><th>НМЦК </th><th>ЦП</th><th>Цена контракта</th><th>% сни-жения</th><th>Предмет закупки</th><th>ИНН Заказчика<br>(Организатора заказа)</th><th>Название заказчика<br>(разместившего заказ)</th><th>Инн поставщика</th><th>Название поставщика</th><th>Метаданные</th></tr>";
+$p="<tr><th> Дата </th><th>Способ закупки</th><th> Закупка </th><th>№ лота</th><th>Заявок</th><th>Отклонено</th><th>ОКПД</th><th>НМЦК </th><th>Цена единицы</th><th>Цена победителя</th><th>Цена контракта</th><th>% сни-жения</th><th>Предмет закупки</th><th>ИНН Заказчика<br>(Организатора заказа)</th><th>Название заказчика<br>(разместившего заказ)</th><th>ИНН поставщика</th><th>Название поставщика</th><th>Метаданные</th></tr>";
    } else
     {
      { $sql="select * from doubleconcurents where cartelid=".$gid;};
@@ -259,7 +270,9 @@ $p="<tr><th> Дата </th><th>Процедура</th><th> Закупка </th><
 //15 - percent
 //16 - co inn
 //17 - co name
-//18 - цп.
+//20 - цп.
+//21 - itemprice
+//22 - percentsx
  $stmt = sqlsrv_query ($db, $sql);
   if( $stmt === false ) {
     echo ($sql.'<br>');
@@ -270,14 +283,23 @@ while($row = sqlsrv_fetch_array($stmt)) {
 	$d='';
 	if ($row[3]!=NULL) {$d=$row[3]->format( 'd-m-Y' );};
 $percent='-';
+if ($row[21]==0) {$row[21]='';};
+
 $cp=$row[20];if ($cp=="") {
 	$cp="<span class='c_missed'>".$row[2]."</span>";
+	$row[20]=$row[2];
 	};
 if ($row[8]!='')
-   { $percent=$row[15];//($row[2]-$row[8])/$row[2]*100;
+   { //$percent=$row[15];//($row[2]-$row[8])/$row[2]*100;
+		
+//      $percent=($row[2]-$row[20])/$row[2];
+//      $percent=$percent*100; //ы	
+//$percent=
       if ($row[9]==0) {$row[9]=1;}; //для пустых выигранных заявок
+$percent=$row[22];		
       $percent=round(($percent)*100)/100;
 	$percent=$percent.'%';	
+
 	};
 $href="<a href=meta.php?cinn=".trim($row[16]).'&metatag='.urlencode($metatag).' a>'.$row[16];
 $p=$p."\n"."<tr><td>".$d. "</td><td>".
@@ -289,6 +311,7 @@ $p=$p."\n"."<tr><td>".$d. "</td><td>".
   $row[10]."</td><td>". //rejected
   $row[11]."</td><td>". //okpd
   toutf($row[2])."</td><td>". //nmck
+  toutf($row[21])."</td><td>".
   toutf($cp)."</td><td>". //сp
   toutf($row[8])."</td><td>".
   $percent."</td><td>".
