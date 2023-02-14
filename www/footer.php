@@ -2,7 +2,7 @@
 <tr> 
 <tr class='c_blue'>
  <td colspan=3> Проект Тендерскоп размещает информацию, полученную с официального сайта 
-<a href="https://zakupki.gov.ru">ЕИС в сфере закупок </a> 
+<a href="https://zakupki.gov.ru">ЕИС в сфере закупок</a> 
 и не может нести ответственности за публикацию неточных, неполных или неверных данных о юридических лицах, а также за раскрытие персональных данных физических лиц, так как все данные на портале опубликованы на официальных источниках. 
 </td></tr>
 <tr height="1px"><td colspan=3></td></tr>
@@ -13,7 +13,7 @@
 
 <tr class='c_blue'><td><a href="https://transparency.org.ru/politika-konfidencialnosti/">Политика конфиденциальности </a></td>
 </td>
-<td>по всем вопросам <a href="mailto:tenderscope@transparency.org.ru">пишите нам</a></td>
+<td>По всем вопросам <a href="mailto:tenderscope@transparency.org.ru">пишите нам</a></td>
 <td>Вы  можете сообщить о коррупции через нашу <a href="https://knigazhalob.transparency.org.ru/?utm_source=declarator-main">Книгу жалоб</a></td>
 
 </tr>

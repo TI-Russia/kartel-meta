@@ -131,9 +131,9 @@ if (($oid=='')&&($cid=='')&&($xoid==''))
 	echo "<tr><th>ИД Группы</th>
 		  <th> <a href=cartels.php>ИД Картеля</a></th>
 		  <th><a href=cartels.php?order=cnt>Участники</a></th>
-		  <th><a href=cartels.php?order=total>к-во пересечений в<br>конкурентных закупках</a></th>
+		  <th><a href=cartels.php?order=total>К-во пересечений в<br>Конкурентных закупках</a></th>
 		  <th>Сумма НМЦК</th> 
-		  <th><a href=cartels.php?order=sum>сумма контрактов в пересекающихся закупках</a></td><td>Регионы присутствия</td></tr>";
+		  <th><a href=cartels.php?order=sum>Сумма контрактов в пересекающихся закупках</a></td><td>Регионы присутствия</td></tr>";
    } else
     {
     $n=sql_get_Gid_by_Cid($db,$cid);

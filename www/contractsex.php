@@ -55,7 +55,7 @@ echo '<form method="get" action="/contractsex.php">
  ob_end_flush();
 } else  //download mode
  {
-    header("Content-Disposition: attachment; filename=contracts.xls");  
+    header("Content-Disposition: attachment; filename=contracts_".$coinn.".xls");  
     header("Content-type: application/octet-stream");
     ob_end_clean();
     echo $xlshdr;echo $style;
@@ -162,11 +162,11 @@ if ($oid=="")
 	$zak=$row[5];
 
         if ($zak!='') 
-	{	$zak="<a href=https://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=".toutf($row[5]).">".$zak."</a>";
+	{	$zak="<a href=https://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=".toutf($row[5]).">&nbsp;".$zak."</a>";
           } else $zak='&nbsp;';
 
          echo "<tr><td><a href=orgsex.php?oid=".toutf($row[1]).">".toutf($row[1])."</a></td>".
-		"<td><a href=https://zakupki.gov.ru/epz/contract/contractCard/common-info.html?reestrNumber=".toutf($row[2]).">".$row[2]."</a></td>".
+		"<td><a href=https://zakupki.gov.ru/epz/contract/contractCard/common-info.html?reestrNumber=".toutf($row[2]).">&nbsp;".$row[2]."</a></td>".
 		"<td><a href=contractsex.php?phone=".rawurlencode(toutf($row[3])).">".toutf($row[3])."</a></td>".
 		"<td>".$eml."</td><td>".$zak."</td><td><a href=orgsex.php?inn=".$row[7].">".toutf($row[7])."</a></td><td>".toutf($row[6])."</td><td>".$row[8]."</td><td>".
          $d."</td><td>".
@@ -182,9 +182,9 @@ if ($oid=="")
 
 	$zak=$row[5];
         if ($zak!='') 
-	{	$zak="<a href=https://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=".toutf($row[5]).">".$zak."</a>";
+	{	$zak="<a href=https://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=".toutf($row[5]).">&nbsp;".$zak."</a>";
           } else $zak='&nbsp;';
-         echo "<tr><td>".toutf($row[1])."</a></td><td><a href=https://zakupki.gov.ru/epz/contract/contractCard/common-info.html?reestrNumber=".toutf($row[2]).">".$row[2]."</a></td>".
+         echo "<tr><td>".toutf($row[1])."</a></td><td><a href=https://zakupki.gov.ru/epz/contract/contractCard/common-info.html?reestrNumber=".toutf($row[2]).">&nbsp;".$row[2]."</a></td>".
 		"<td><a href=contractsex.php?phone=".toutf($row[3]).">".toutf($row[3])."</a></td><td>".
 		     $eml."</td><td>".$zak."</td><td>".$row[8]."</td><td>".
 	  $d."</td><td>".

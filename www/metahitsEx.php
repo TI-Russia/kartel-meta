@@ -51,7 +51,7 @@ else
 	case 'cname':{$sql=$sql .' order by b.name';break;};
 	default: ;
 	}
-	echo "<tr><td> <a href=metahitsEx.php?order=name>заказчики</a></td>
+	echo "<tr><td> <a href=metahitsEx.php?order=name>Заказчики</a></td>
 	<td><a href=metahitsEx.php?order=value>Метаданные</a></td>
         <td><a href=metahitsEx.php?order=metatag>МетаТэг</a></td>
         <td><a href=metahitsEx.php?order=inn>ИНН</a></td>

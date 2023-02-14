@@ -37,9 +37,10 @@ function sql_escape($msg)
 }
 
 function sql_close($id) { return sqlsrv_close($id); };
-function sql_getcount($db,$t)
- {
-        $stmt=sqlsrv_query ($db, 'select count(*) from '.$t);
+function sql_getcount($db,$t )
+ {   $sql='select count(*) from '.$t;
+        $stmt=sqlsrv_query ($db, $sql);
+//	echo $sql;
 	$row=sqlsrv_fetch_array($stmt);$total=$row[0];	
 	sqlsrv_free_stmt($stmt);
 	return $total;

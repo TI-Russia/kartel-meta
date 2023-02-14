@@ -41,7 +41,7 @@ else
 }
 
  $db=sql_connect();
-if ($cid=='')
+if ($cid=='')                                                                                   
 {
 echo '<form method="get" action="/cartels.php">
 	Регион присутствия:<input name="region" value='.$reg.'>
@@ -63,7 +63,8 @@ if ($page>0) {
 		};
 if (($oid=='')&&($cid=='')&&($xoid=='')) 
 
-   {    $total=sql_getcount($db,'cartels');
+   {    $rr='';if ($reg>0) {$rr=' where (groups.id in (select gid from groupregs where reg='.$reg.'))';};
+	  $total=sql_getcount($db,'groups '.$rr);
         $pages=ceil($total/40);$pages=$pages++;
         if ($page>$pages) {$page=1;};
         printpages($pages,$page,$order,$reg);
@@ -76,7 +77,7 @@ if (($oid=='')&&($cid=='')&&($xoid==''))
 	case 'total':{$sql='select id,oid,count,total,sum,name,comment from ft_getpagegroups_total('.$page.',40)';break;};
 	default: $sql='select id,oid,count,total,sum,name,comment from ft_getpagegroupsREG('.$page.',40,'.$reg.')';
 	}
-	echo "<tr><td> <a href=groups.php>Группа компаний</a></td><td><a href=groups.php?order=cnt>Участники</a></td><td><a href=groups.php?order=total>к-во контрактов</a></td><td><a href=groups.php?order=sum>сумма контрактов</a></td><td>Регионы присутствия</td></tr>";
+	echo "<tr><td> <a href=groups.php>Группа компаний</a></td><td><a href=groups.php?order=cnt>Участники</a></td><td><a href=groups.php?order=total>К-во контрактов</a></td><td><a href=groups.php?order=sum>Сумма контрактов</a></td><td>Регионы присутствия</td></tr>";
 
    } else
     {

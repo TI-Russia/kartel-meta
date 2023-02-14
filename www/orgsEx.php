@@ -63,7 +63,7 @@ if ($name!='') {$sql="select * from orgs where name like '%".to1251($name)."%'";
      }
 
 $p="<table border=1 cellspacing=0 cellpadding=0>";
-$p=$p."<tr><th> id </th><th>ИД Группы</th><th>ИД картеля</th><th>ИНН</th><th>Название<th align=center>е-мейлы,<br>по которым есть связи</th><th align=center>Телефоны, <br>по которым есть связи</th><th>Кол-во<br>контрактов</th><th>На сумму</th><th>Регионы<br>присутствия</th></tr>";    
+$p=$p."<tr><th> id </th><th>ИД Группы</th><th>ИД картеля</th><th>ИНН</th><th>Название<th align=center>Е-мейлы,<br>по которым есть связи</th><th align=center>Телефоны, <br>по которым есть связи</th><th>Кол-во<br>контрактов</th><th>На сумму</th><th>Регионы<br>присутствия</th></tr>";    
 while($row = sqlsrv_fetch_array($stmt)) {
 $p=$p."\n".
 "<tr><td><a href=orgsex.php?oid=".$row[0].">".$row[0]."</a></td>".

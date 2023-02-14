@@ -25,7 +25,7 @@ if ($inn!='') {$sql="select * from orgs where inn='".$inn."'";};
     die(toutf(sqlsrv_errors()[0][2]));
      }
 echo "<table border=1>";
-echo "<tr><td> id </td><td>ИД картеля</td><td>ИНН</td><td>Название<td>телефон</td><td>Телефоны, по которым есть связи</td></tr>";    
+echo "<tr><td> id </td><td>ИД картеля</td><td>ИНН</td><td>Название<td>Телефон</td><td>Телефоны, по которым есть связи</td></tr>";    
 while($row = sqlsrv_fetch_array($stmt)) {
 
 echo "<tr><td><a href=orgs.php?oid=".$row[0].">".$row[0]."</a></td><td><a href=cartels.php?cid=".$row[7].">".$row[7]."</td><td>".toutf($row[2])."</td><td>".toutf($row[1])."</td><td>".toutf($row[4])."</td><td>".toutf($row[6]).findallp($db,$row[0],'')."</td></tr>";
@@ -34,6 +34,6 @@ echo "<tr><td><a href=orgs.php?oid=".$row[0].">".$row[0]."</a></td><td><a href=c
 
 };
 echo "</table>";
- print_r($row);
+// print_r($row);
  sql_close($db);
 ?>
