@@ -1,25 +1,30 @@
-<table border=0 width=100% >
-<tr> 
-<tr class='c_blue'>
- <td colspan=3> Проект Тендерскоп размещает информацию, полученную с официального сайта 
-<a href="https://zakupki.gov.ru">ЕИС в сфере закупок</a> 
-и не может нести ответственности за публикацию неточных, неполных или неверных данных о юридических лицах, а также за раскрытие персональных данных физических лиц, так как все данные на портале опубликованы на официальных источниках. 
-</td></tr>
-<tr height="1px"><td colspan=3></td></tr>
-<tr class='c_blue'>
- <td colspan=3> Если вы обнаружили и хотите удалить недостоверные или устаревшие данные о себе ー <a href="mailto:tenderscope@transparency.org.ru">напишите нам.</a>
-</td></tr>
-<tr height="1px"><td colspan=3></td></tr>
+</div>
+<div class="tsfooter"> 
+<!--  <div class="footer-rect"> -->
+	<div class="spacer" style="height:20px"></div>
+	<div class="rowBox">
+	<table border=0 width=100%>
+	<tr><td class="footer_text roboto-text-15" width="40%" >
+	Если вы обнаружили и хотите удалить недостоверные или устаревшие данные о&nbsp;себе&nbsp;ー 
+	<a href="mailto:tenderscope@yandex.ru"><span class="ts_url roboto-text-15">напишите нам</span></a>
+	</td><td>&nbsp;</td>
+	<td class="footer_text roboto-text-15" width="40%">
+	По всем вопросам:<br> 
+	<a href="mailto:tenderscope@yandex.ru"><span class="ts_url roboto-text-15">tenderscope@yandex.ru</span></a> 
+	
+	</td><tr></table>
+	</div>
+	<div class="spacer" style="height:10px"></div>
+	<div class="xx helios-footer">Проект Тендерскоп размещает информацию, полученную с официального сайта 
+		<a href="https://zakupki.gov.ru" target="_blank"><span class="menu1 helios-footer">ЕИС</span></a> в сфере закупок, и не может нести ответственности за публикацию неточных, неполных или неверных данных о&nbsp;юридических лицах, а также за раскрытие персональных данных физических лиц, так как все данные, опубликованные на портале, взяты из официальных источников.
+	</div>
+<!--  </div> -->
+</div>
 
-<tr class='c_blue'><td><a href="https://transparency.org.ru/politika-konfidencialnosti/">Политика конфиденциальности </a></td>
-</td>
-<td>По всем вопросам <a href="mailto:tenderscope@transparency.org.ru">пишите нам</a></td>
-<td>Вы  можете сообщить о коррупции через нашу <a href="https://knigazhalob.transparency.org.ru/?utm_source=declarator-main">Книгу жалоб</a></td>
+</div>
 
-</tr>
-
-</table>
-<!-- Yandex.Metrika counter -->
+      
+</body></html>
 <script type="text/javascript" >
    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
    m[i].l=1*new Date();

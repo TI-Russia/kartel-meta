@@ -1,0 +1,137 @@
+.oktmoStyle
+{
+  color:#000000; 
+  font-size:16px; 
+  background-color:#ffffff; 
+  border-radius: 7px; 
+  -moz-border-radius: 7px; 
+  -webkit-border-radius: 7px;
+}
+
+.oktmoContainer{
+  margin-top:2px; 
+  position: relative;
+  width: 400px;
+  display:flex;
+  flex-direction:row;
+  border:1px solid grey;
+  padding:1px;
+}
+
+.oktmoContainer input {
+  width: 100%;
+  padding-right: 2px;
+  padding-left: 2px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border: none;
+  outline: none;
+}
+
+.oktmoContainer input:placeholder-shown + button.ddcleadButt{
+  opacity: 0;
+  pointer-events: none;
+} 
+
+.ddcleadButt {
+  position: absolute;
+  border: none;
+  display: block;
+  width: 15px;
+  height: 15px;
+  line-height: 16px;
+  font-size: 12px;
+  border-radius: 50%;
+  top: 0;
+  bottom: 0;
+  right: 30px;
+  margin: auto;
+  background: #ddd;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+  transition: .1s;
+}
+
+.oktmoContainer:focus-within { 
+  border: 2px solid black 
+}
+
+.ddbutt {
+  flex: 1;
+  border: 1px solid black;
+}
+
+.arrow-down {
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;  
+  border-top: 5px solid #202020;  
+  display: inline-block;
+  padding-top:0px;
+}
+
+#oktmosearch {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  overflow-y: auto;
+  border: 1px solid black;
+  display: none;
+  z-index: 1;
+  background: white;
+}
+
+.oktmosearch ul{
+ width: 100%
+}
+
+.selected
+{
+  border-bottom: 2px solid black;
+}
+
+ul, #ulOKTMO {
+  list-style-type: none;
+}
+
+#ulOKTMO {
+  margin: 0;
+  padding: 0;
+}
+
+#ulOKTMO > li > ul {
+    margin-left: 10px;
+}
+#ulOKTMO > li > ul ul {
+    margin-left: 15px;
+}
+
+.caret {
+  cursor: pointer;
+  user-select: none;
+}
+
+.caret::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 12px;
+}
+
+.caret-down::before {
+  transform: rotate(90deg);
+}
+
+.nested {
+  display: none;
+}
+
+.active {
+  display: block;
+}
+
+.oclick {
+  cursor: pointer;
+}

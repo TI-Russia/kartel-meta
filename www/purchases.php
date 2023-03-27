@@ -7,12 +7,14 @@ $oid=0;
 
 if(count($_GET) == 0) 
   {$go='form';$params='';$oid='';$cid='';$xcid='';$gid=''; 
-   $maxlist=2000;	
+   $maxlist=200;
+   $cname='';		
    $mindate='';
    $maxdate='';$ptype='';
    $mindiscount='';
    $maxdiscount='';	
    $purnumber='';
+   $metatag='';
    $download=0;
    $okpd='';$oid=0;$oidname='';$purname='';
    $cinn='';$iinn='';$coid=0;
@@ -24,6 +26,7 @@ else
    $maxlist=getparm('maxlist');
    if ($maxlist=='') {$maxlist=200;};
    $mindiscount=getparm('mindiscount');
+   $cname=getparm('cname');
    $maxdiscount=getparm('maxdiscount');
    $okpd=getparm('okpd');
    $download=getparm('download');
@@ -32,15 +35,26 @@ else
    $ptype=getparm('ptype');
    $purnumber=getparm('purnumber');
    $purname=getparm('subject');
+   $metatag=getparm('metatag');
+   $metatag=str_replace('+',' ',$metatag);
    //delete ++ from purname
 $purname=str_replace('+',' ',$purname);
    $iinn=getparm('iinn');
    $cinn=getparm('cinn');	
-   $coid=getparm('coid');
-   if ($coid=='') {$coid=0;};
-   $oid=0;
+   $coid=getparm('coid');  if ($coid=='') {$coid=0;};
+   $oid=getparm('oid');    if ($oid=='') {$oid=0;};
    if ($gid!='') {$xcid=$gid;};
 }
+/*
+	   select * from zakupki.dbo.purchasesLt as a inner join meta_zakupki.dbo.datafiles as d on d.purchasenumber=a.purchasenumber 
+	   inner join meta_zakupki.dbo.metafiles as m on d.contentid=m.contentid
+	   inner join meta_zakupki.dbo.metatags as t on m.id=t.[file]
+	   where a.purchasenumber in (
+    select purchasenumber from
+	datafiles where contentid in
+	(select contentid from metafiles where id in (select [file] FROM [meta_zakupki].[dbo].[Metatags] where value='НПП "Гарант-Сервис"')))
+*/
+
 
  $db=sql_connect();
  $p = '';
@@ -71,53 +85,13 @@ if (($iinn!='')&&($iinn!="''"))
 if ($download!=1) 
 {
 //------------ Шапка сайта
-echo '<form method="get" action="/purchases.php">
-	Вид конкурсной процедуры    :   <input name="ptype" list="ptype" value="'.$ptype.'" '.
- $inputstyle.'
-
-   <datalist id="ptype">
-    <option> </option>
-    <option>	EA44	</option>
-<option>	EA615	</option>
-<option>	EAB44	</option>
-<option>	EAO44	</option>
-<option>	EAP44	</option>
-<option>	EEA44	</option>
-<option>	EK44	</option>
-<option>	EOK44	</option>
-<option>	EOKU44	</option>
-<option>	OK	</option>
-<option>	OK44	</option>
-<option>	OKA44	</option>
-<option>	OKP44	</option>
-<option>	OKU44	</option>
-<option>	OKUP44	</option>
-<option>	PK44	</option>
-<option>	POKU44	</option>
-<option>        POP44   </option>
-<option>        ZA111   </option>
-<option>	ZK44	</option>
-<option>	ZKB44	</option>
-<option>	ZKBGP44	</option>
-<option>	ZKBIG44	</option>
-<option>	ZKE44	</option>
-<option>	ZKI44	</option>
-<option>	ZKK44	</option>
-<option>	ZKKD44	</option>
-<option>	ZKKDP44	</option>
-<option>	ZKKP44	</option>
-<option>	ZKKU44	</option>
-<option>	ZKKUP44	</option>
-<option>	ZKOO44	</option>
-<option>	ZKOP44	</option>
-<option>	ZKP44	</option>
-<option>	ZP44	</option>
-<option>	ZPP44	</option>
-<option>	ОКА44	</option>
- </datalist>'.
-	'ОКПД:<input name="okpd" value="'.$okpd.'" '.$inputstyle.
-	'Обьект закупки:<input name="subject" value="'.$purname.'" '.$inputstyle.
-	'<p>Процент снижения НМЦК от:<input name="mindiscount" value="'.$mindiscount.'" '.$inputstyle.
+//echo ">>>>>>".htmlspecialchars($metatag)."<<<<<<";
+echo '<form method="get" action="purchases.php">
+	Способ закупки   :   <input name="ptype" list="ptype" value="'.$ptype.'" '.
+ $inputstyle.
+ $ptype_datalist.
+	'Обьект закупки:<input name="subject" value="'.htmlspecialchars($purname).'" '.$inputstyle.
+	'<p>Процент снижения НМЦК(Цены единицы) от:<input name="mindiscount" value="'.$mindiscount.'" '.$inputstyle.
 	'До:<input name="maxdiscount" value="'.$maxdiscount.'" '.$inputstyle.
 	'Номер закупки:<input name="purnumber" value="'.$purnumber.'" '.$inputstyle.
 	'<p>'.
@@ -127,7 +101,7 @@ echo '<form method="get" action="/purchases.php">
 ' ИНН Заказчика/(разместителя заказа):<input name="cinn" value="'.$cinn.'" '.$inputstyle.
 ' ИНН Исполнителя:<input name="iinn" value="'.$iinn.'" '.$inputstyle.'<br><br>
         Вывести список не более чем из <input name="maxlist" value="'.$maxlist.'"'.$inputstyle.' строк
-        <input type=submit value="Найти" formaction="/purchases.php" '.$submitstyle."\n".
+        <input type=submit value="Найти" formaction="purchases.php" '.$submitstyle."\n".
         '<input type=button value="Cкачать результат" OnClick="document.location.href=\''.$myurl.'&download=1\';" '.$submitstyle.
 '</form>';
  ob_end_flush();
@@ -139,15 +113,13 @@ echo '<form method="get" action="/purchases.php">
     echo $xlshdr;
  }
 echo "<table border=1 cellspacing=0 cellpadding=0>";
-if (($xcid=='')and($gid=='')) 
 
-
-   {  $if1=''; if (($mindiscount!='')&&($mindiscount!="''")) 
+   $if1=''; if (($mindiscount!='')&&($mindiscount!="''")) 
  //{$if1='discount>=maxprice*('.$mindiscount.'/100.0) ';};
-   {$if1='a.percents>='.$mindiscount.' '; };
+   {$if1='percentsex>='.$mindiscount.' '; };
 //$percent=($row[2]-$row[8])/$row[2]*100;
       $if2=''; if (($maxdiscount!='')&&($maxdiscount!="''")) 
- {$if2='a.percents<='.$maxdiscount.' '; };
+ {$if2='percentsex<='.$maxdiscount.' '; };
 //{$if2='discount<=maxprice*('.$maxdiscount.'/100.0) ';};
       $ifd1=''; if ($mindate!='') {$ifd1="a.date >="._sql_validate_value($mindate)." ";};
       $ifd2=''; if ($maxdate!='') {$ifd2="a.date <="._sql_validate_value($maxdate)." ";};
@@ -172,35 +144,29 @@ if (($xcid=='')and($gid==''))
 		$if=$if. ' a.type='._sql_validate_value($ptype).' and ';
 	}
 
-};//      echo $if;
-
-//      $sql="select top ".$maxlist." a.purchasenumber,a.coid,a.maxprice,a.date,a.status,a.cphone,a.cemail,a.lot,a.discount,a.okpd,a.type,a.oid,a.name,a.percents,orgs.inn,orgs.name,o2.inn,o2.name 
-//      from (select  *,(case when maxprice=0 then NULL else  (maxprice-discount)/maxprice*100 end) as percents  from zakupki_work.dbo.purchasesLT) as a inner join orgs on (a.coid=orgs.oid) left join orgs o2 on (a.oid=o2.oid)   where ".$if."  a.date > '2014-01-01' order by a.date";
+}; //     echo $if;
+if (trim($if)=="") {$sql='select 1';} else	
+{
+//echo '>>'.$if.'<<';
       $sql="select top ".$maxlist. " * from (select
 a.purchasenumber,a.coid,a.maxprice,a.date,a.status,a.cphone,a.cemail,a.lot,a.discount,a.offers,a.rejected,a.okpd,a.type,a.oid,a.name,a.percents,orgs.inn,orgs.name as oname,o2.inn as oinn,o2.name as o2name,p.sum,a.itemprice,
 
-iif(a.itemprice>0 and a.itemprice/(a.maxprice+0.0001)>10,(a.itemprice-iif(p.sum=0,maxprice,p.sum ) )/a.itemprice*100,iif(a.maxprice=0, NULL ,(a.maxprice-iif(p.sum=0,maxprice,p.sum ))/a.maxprice*100)) as percentsex
+iif(a.itemprice>0 and 
+
+ (((a.maxprice-a.discount)<a.itemprice)or(a.itemprice-p.sum>=0)) ,
+(a.itemprice-iif(p.sum=0,iif(a.itemprice>0,a.itemprice,a.maxprice),p.sum ) )/a.itemprice*100,iif(a.maxprice=0, NULL ,(a.maxprice-iif(p.sum=0,maxprice,p.sum ))/a.maxprice*100)) as percentsex
  
  from (
- select *,(case when maxprice=0 then NULL else (maxprice-discount)/maxprice*100 end) as percents from zakupki_work.dbo.purchasesLT
+ select *,(case when maxprice=0 then NULL else (maxprice-discount)/maxprice*100 end) as percents from ".$zakupkibase.".dbo.purchasesLT
  ) as a 
  inner join orgs on (a.coid=orgs.oid) left join orgs o2 on (a.oid=o2.oid) 
- left join zakupki.dbo.concurents as p on (p.purchasenumber=a.purchasenumber and p.place=1 and p.active=1)
+ left join zakupki.dbo.concurents as p on (p.purchasenumber=a.purchasenumber and p.place=1 and p.active=1 and a.lot=p.lot )
  ) as a where ".$if."  a.date > '2014-01-01' order by a.date";
 
-//echo $sql;
+//echo htmlentities($sql);
 //header	
-$p="<tr><th> Дата </th><th>Процедура</th><th> Закупка </th><th>№ лота</th><th>ОКПД</th><th>НМЦК </th><th>Цена контракта</th><th>% снижения</th><th>Предмет закупки</th><th>ИНН Заказчика<br>(Разместившего заказ)</th><th>Название заказчика<br>(разместившего заказ)</th><th>Инн поставщика</th><th>Название поставщика</th></tr>";
-   } else
-    {
-     { $sql="select * from doubleconcurents where cartelid=".$gid;};
-    if ($xcid>0)
-     { $sql="select * from concurentsLT  join orgs on orgs.oid=concurentsLT.oid where 
-       (purchasenumber in (select purchasenumber from doubleconcurents where cartelid=".$xcid.")) 
- and(cartelid=".$xcid.") order by purchasenumber";
-	echo "<tr><th> закупка </th><th>ИД организации</th><th>ИД группы</th><th>Название организации</th></tr>";
-    }
-     };
+$p="<tr><th> Дата </th><th>Способ закупки</th><th>№ закупки </th><th>№ лота</th><th>Количество заявок</th><th>Отклонено</th><th>ОКПД(2)</th><th>НМЦК </th><th>Цена единицы</th><th>Цена победителя</th><th>Цена контракта</th><th>% сни-жения</th><th>Предмет закупки</th><th>ИНН Заказчика<br>(Организатора закупки)</th><th>Заказчик<br>(организатор закупки)</th><th>ИНН поставщика</th><th>Поставщик</th></tr>";
+   
 //echo $sql;
 //0 - purchasenumber
 //1 - coid
@@ -211,13 +177,19 @@ $p="<tr><th> Дата </th><th>Процедура</th><th> Закупка </th><
 //6 - mail
 //7 - lot
 //8 - discount
-//9 - okpd
-//10 - type
-//11 - oid
-//12 - name
-//13 - percent
-//14 - co inn
-//15 - co name
+//9 offers
+//10 rejected
+//11 - okpd
+
+//12 - type
+//13 - oid
+//14 - name
+//15 - percent
+//16 - co inn
+//17 - co name
+//20 - цп.
+//21 - itemprice
+//22 - percentsx
  $stmt = sqlsrv_query ($db, $sql);
   if( $stmt === false ) {
     echo ($sql.'<br>');
@@ -228,29 +200,48 @@ while($row = sqlsrv_fetch_array($stmt)) {
 	$d='';
 	if ($row[3]!=NULL) {$d=$row[3]->format( 'd-m-Y' );};
 $percent='-';
+if ($row[21]==0) {$row[21]='';};
+
+$cp=$row[20];if ($cp=="") {
+	$cp="<span class='c_missed'>".$row[2]."</span>";
+	$row[20]=$row[2];
+	};
 if ($row[8]!='')
-   { $percent=$row[13];//($row[2]-$row[8])/$row[2]*100;
+   { //$percent=$row[15];//($row[2]-$row[8])/$row[2]*100;
+		
+//      $percent=($row[2]-$row[20])/$row[2];
+//      $percent=$percent*100; //ы	
+//$percent=
+      if ($row[9]==0) {$row[9]=1;}; //для пустых выигранных заявок
+$percent=$row[22];		
       $percent=round(($percent)*100)/100;
 	$percent=$percent.'%';	
+
 	};
+$href="<a href=meta.php?cinn=".trim($row[16]).'&metatag='.urlencode($metatag).' a>'.$row[16];
 $p=$p."\n"."<tr><td>".$d. "</td><td>".
-  $row[10]."</td><td>".
-  "<a href=https://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=".toutf($row[0]).">&nbsp;".toutf($row[0])."</a></td><td>".
+  $row[12]."</td><td>".
+  "<a href=https://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=".toutf($row[0]). ' target="_blank">&nbsp;'.toutf($row[0])."</a></td><td>".
   $row[7]."</td><td>". //lot
-  $row[9]."</td><td>". //okpd
+  
+  $row[9]."</td><td>". //offers
+  $row[10]."</td><td>". //rejected
+  $row[11]."</td><td>". //okpd
   toutf($row[2])."</td><td>". //nmck
+  toutf($row[21])."</td><td>".
+  toutf($cp)."</td><td>". //сp
   toutf($row[8])."</td><td>".
   $percent."</td><td>".
-  toutf($row[12])."</td><td>".
-  toutf($row[14])//sql_getorgINN($db,$row[1])
-   ."</td><td>".
-  toutf($row[15])//sql_getorgname($db,$row[1])
+  toutf($row[14])."</td><td>".
+  $href."</td><td>".		//inn 
+
+  toutf($row[17])//sql_getorgname($db,$row[1])
   ."</td><td>".
-  toutf($row[16])."</td><td>".
-  toutf($row[17])."</td></tr>";
+  toutf($row[18])."</td><td>".
+  toutf($row[19])."</td></tr>";
 }
 };
-
+}
 //    die( print_r( sqlsrv_errors(), true));
 $p=$p."</table></body></html>";
 echo $p;

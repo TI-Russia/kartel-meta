@@ -24,7 +24,7 @@ function findallregs($db,$id)
 $oid=0;
 
 if(count($_GET) == 0) 
-  {$go='form';$params='';$oid='';$cid='';$xoid='';$page=1;$reg=0;$order=''; } 
+  {$go='form';$params='';$oid='';$cid='';$xoid='';$page=1;$reg='';$order=''; } 
 else
 { 
    $oid=getparm('oid');
@@ -32,8 +32,8 @@ else
    $gid=getparm('gid');
    $xoid=getparm('xoid');
    $page=getparm('page');
-   $reg=getparm('region');
-   if ($reg=='') {$reg=0;};
+   $reg=getparm('name');
+//   if ($reg=='') {$reg=0;};
         if ($page=='') {$page=1;};
 //	if ($xoid=='') {$xoid=0;};	
 //	if ($oid=='') {$oid=0;};
@@ -43,38 +43,47 @@ else
 }
 
  $db=sql_connect();
-
+echo '<div class="hdrgray">Победители с совпадающими метаданными</div>'; 
+echo '<form method="get" action="orgsex.php">'.
+//	Телефон:<input name="phone" value='.$phone.'>
+//	Е-мейл:<input name="email" value='.$email.'>
+//'	ИНН организации:<input name="inn" value="'.$inn.'" placeholder="Поиск по ИНН" '.$inputstyle .
+'	Название организации:<input name="name" value="'.$reg.'" placeholder="Поиск по названию поставщика" '.inputstyle(300) .
+'        <input type=submit value="Найти" formaction="metahits.php" '.$submitstyle.
+'</form>';
 
  $p = '';
- $limit=5;
+ $limit=10;
 // print_r($db);
-if ($page>0) {
-		echo '<strong style="color: #ff0036">Страница № ' . $page . 
-		'</strong>'; 
-		};
+//if ($page>0) {echo '<strong style="color: #ff0036">Страница № ' . $page . '</strong>'; };
 if (($oid=='')&&($cid=='')&&($xoid=='')) 
 
-   {    $total=sql_getcount($db,'meta_work.dbo.ByUser');
+   {      $rr='';if ($reg>0) {$rr=" where (name like '%".to1251($reg)."%')";};
+	  $total=sql_getcount($db,'meta_work.dbo.ByUser'.$rr);
+
         $pages=ceil($total/40);$pages=$pages++;
         if ($page>$pages) {$page=1;};
-        printpages($pages,$page,$order,$reg);
-	echo "<table border=1 cellspacing=0 cellpadding=0>";
+        printpages($pages,$page,$order,$reg,'name');
+	echo "<table border=1 cellspacing=0 cellpadding=0 width=100%>";
 
 	switch  ($order) 
 	{
-	case 'cnt':{$sql='select name,foid,cnt,value,metatag from meta_work.dbo.ft_getpageUsers_cnt('.$page.',40)';break;};
-	case 'value':{$sql='select name,foid,cnt,value,metatag from meta_work.dbo.ft_getpageUsers_value('.$page.',40)';break;};
-	default: $sql='select name,foid,cnt,value,metatag from meta_work.dbo.ft_getpageUsers('.$page.',40)' ;
+	case 'cnt':
+	case 'value':
+	case 'name':	
+	case 'metatag':{$sql='select name,foid,cnt,value,metatag from meta_work.dbo.ft_getUsersUni('.$page.",40,'".to1251($reg)."','".$order."')" ;break;};
+	default: $sql='select name,foid,cnt,value,metatag from meta_work.dbo.ft_getUsersUni('.$page.",40,'".to1251($reg)."','name')" ;
 	}
-	echo "<tr><td> <a href=metahits.php?order=foid>Исполнители</a></td>
-	<td><a href=metahits.php?order=cnt>Совпадений</a></td>
-	<td><a href=metahits.php?order=value>Метаданные</a></td>
-        <td><a href=metahits.php?order=MetaTag>МетаТэг</a></td>
-	</tr>";
+        if ($reg!='') $namelink='name='.$reg.'&'; else $namelink='';
+	echo "<thead><th> <a href=metahits.php?".$namelink."order=name>Поставщик</a></th>
+	<th><a href=metahits.php?".$namelink."order=cnt>Совпадения</a></th>
+	<th><a href=metahits.php?".$namelink."order=value>Метаданные</a></th>
+        <th><a href=metahits.php?".$namelink."order=metatag>МетаТэг</a></th>
+	</thead>";
 
    };
 
-// echo $sql;
+// echo toutf($sql);
  $stmt = sqlsrv_query ($db, $sql);
   if( $stmt === false ) {
     echo ($sql.'<br>');
@@ -85,12 +94,12 @@ while($row = sqlsrv_fetch_array($stmt)) {
 if (($oid=='')&&($cid==''))
 {
  $url='meta.php?metatag='.urlencode(toutf($row[3])).'&oid='.toutf($row[1]);
-echo "<tr><td><a href=orgs.php?oid=".toutf($row[1]).">".toutf($row[0]).
-    "</td><td><a href=".$url.">".toutf($row[2])."</a></td><td>".toutf($row[3])."</td><td>".toutf($row[4])."</td><td>".
-"</td></tr>";
+echo "<tr><td><a href=orgsex.php?oid=".toutf($row[1]).">".toutf($row[0]).
+    "</td><td><a href=".$url.">".toutf($row[2])."</a></td><td>".toutf($row[3])."</td><td>".toutf($row[4])."</td>".
+"</tr>";
 }else
 {
-echo "<tr><td><a href=orgs.php?oid=".toutf($row[1]).">".toutf($row[0])."</a></td><td>".toutf($row[1])."</td><td>".toutf($row[2])."</td><td>".toutf($row[3])."</td><td>".toutf($row[4])."</td><td>".
+echo "<tr><td><a href=orgsex.php?oid=".toutf($row[1]).">".toutf($row[0])."</a></td><td>".toutf($row[1])."</td><td>".toutf($row[2])."</td><td>".toutf($row[3])."</td><td>".toutf($row[4])."</td><td>".
       findallregs($db,$row[0])."</td></tr>";
 }
 

@@ -66,13 +66,16 @@ if (is_dir($dir))
 };
 //define globals
  $myurl=$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
- $inputstyle='style="color:#000000; font-size:16px; background-color:#ffffff; border-radius: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px;">';
- $submitstyle='style="color:#000000; font-size:20px; background-color:#ffb800; border-radius: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px;">';
- $xlshdr='
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
+ $inputstyle='style="color:#000000; margin-top:2px; font-size:16px; background-color:#ffffff; border-radius: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px;">';
+ function inputstyle($width)
+ { return 'style=" width:'.$width.'px; margin-top:2px; color:#000000; font-size:16px; background-color:#ffffff; border-radius: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px;">';
+ }
+// $submitstyle='style="color:#000000; font-size:20px; background-color:#ffb800; border-radius: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px;">';
+ $submitstyle='style="color:#000000; font-size:20px; background-color:var(--main-blue); border-radius: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px;">';
+ $xlshdr='<html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
 xmlns="http://www.w3.org/TR/REC-html40">
 <header><META HTTP-EQUIV="content-language" CONTENT="ru">
-<META HTTP-EQUIV="content-type" CONTENT="text/html; charset=UTF-8"><title></title></headr><body>';
-
+<META HTTP-EQUIV="content-type" CONTENT="text/html; charset=UTF-8"><title></title><style>.msnum{mso-number-format:General;}
+.mstext{mso-number-format:0;}</style></headr><body>';
 ?>

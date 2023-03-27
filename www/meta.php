@@ -2,21 +2,24 @@
  
  include "filer.php";
  include "sql.php";
+$script='<script type="text/javascript" src="meta.js"></script><link rel="stylesheet" href="css/oktmo.css" /><script type="text/javascript" src="oktmo.js"></script>';
+$onload=' onload="floaded();"';
  include "header.php";
 $oid=0;
 
 if(count($_GET) == 0) 
   {$go='form';$params='';$oid='';$cid='';$xcid='';$gid=''; 
    $maxlist=200;
-   $cname='';		
+   $cname='';$pname='';		
    $mindate='';
    $maxdate='';$ptype='';
    $mindiscount='';
    $maxdiscount='';	
+   $maxcontract=0;$mincontract=0;
    $purnumber='';
    $metatag='';
    $download=0;
-   $okpd='';$oid=0;$oidname='';$purname='';
+   $okpd='';$oid=0;$oidname='';$purname='';$oktmo='';
    $cinn='';$iinn='';$coid=0;
    } 
 else
@@ -26,12 +29,16 @@ else
    $maxlist=getparm('maxlist');
    if ($maxlist=='') {$maxlist=200;};
    $mindiscount=getparm('mindiscount');
-   $cname=getparm('cname');
+   $cname=str_replace('+',' ',getparm('cname'));
+   $pname=str_replace('+',' ',getparm('pname'));
    $maxdiscount=getparm('maxdiscount');
    $okpd=getparm('okpd');
+   $oktmo=getparm('oktmo');
    $download=getparm('download');
    $maxdate=getparm('maxdate');
    $mindate=getparm('mindate');
+   $maxcontract=getparm('maxcp');
+   $mincontract=getparm('mincp');
    $ptype=getparm('ptype');
    $purnumber=getparm('purnumber');
    $purname=getparm('subject');
@@ -54,34 +61,31 @@ $purname=str_replace('+',' ',$purname);
 	datafiles where contentid in
 	(select contentid from metafiles where id in (select [file] FROM [meta_zakupki].[dbo].[Metatags] where value='НПП "Гарант-Сервис"')))
 */
+function safestr($a)
+{
+ return "'".toutf(trim(str_replace("\r",' ',str_replace("\n",' ',str_replace("'","\"",$a)))))."'";
+}
+
 function getmetatags($db,$purchase,$meta="" )
 { $res='';
   $sql='select a.filename,b.tag,b.value,b.code,a.contentid
 	from meta_work.dbo.datafiles as a  
 	   inner join meta_work.dbo.metatags as b on b.[fileid]=a.fileid where a.purchasenumber='."'".$purchase."'";
- if ($meta!="") {$sql=$sql ." and b.value='". to1251($meta) ."'";};
+ if ($meta!="") {$sql=$sql ." and b.value like '". to1251($meta) ."'";};
+
 //echo $sql;
 $stmt = sqlsrv_query ($db, $sql);
       if( $stmt === false ) 
 		{  echo ($sql.'<br>');
 			    die(toutf(sqlsrv_errors()[0][2]));
                 }
-$res=
-'<a href=metaall.php?purnumber='.$purchase.'> Все метаданные по закупке</a>'.
-'<table border=1>';$ok=0;
 while($row = sqlsrv_fetch_array($stmt)) {
-    $ok=1;	
-    $res=$res.'<tr><td><a href="https://zakupki.gov.ru/44fz/filestore/public/1.0/download/priz/file.html?uid='.$row[4].'">'.toutf($row[0]).'</a></td><td>'.
-	 toutf($row[1]).'</td><td>'.
-         toutf($row[2]).'</td><td>'.
-	 toutf($row[3]).'</td></tr>';
+    if($res) $res.=',';
+    $res=$res.'['.implode(',',array(safestr($row[4]),safestr($row[0]),safestr($row[1]),safestr($row[2]),safestr($row[3])))."]\n";
    }
-$res=$res.'</table>';
  sqlsrv_free_stmt($stmt);
-if ($ok==0) {$res='&nbsp;';};
-  return $res;
+  return '['.$res.']';
 };
-
 
  $db=sql_connect();
  $p = '';
@@ -109,80 +113,7 @@ if (($iinn!='')&&($iinn!="''"))
 	 sqlsrv_free_stmt($stmt);
 	};
 
-if ($download!=1) 
-{
-//------------ Шапка сайта
-//echo ">>>>>>".htmlspecialchars($metatag)."<<<<<<";
-echo '<form method="get" action="/meta.php">
-	Способ закупки   :   <input name="ptype" list="ptype" value="'.$ptype.'" '.
- $inputstyle.'
-
-   <datalist id="ptype">
-    <option> </option>
-    <option>	EA44	</option>
-<option>	EA615	</option>
-<option>	EAB44	</option>
-<option>	EAO44	</option>
-<option>	EAP44	</option>
-<option>	EEA44	</option>
-<option>	EK44	</option>
-<option>	EOK44	</option>
-<option>	EOKU44	</option>
-<option>	OK	</option>
-<option>	OK44	</option>
-<option>	OKA44	</option>
-<option>	OKP44	</option>
-<option>	OKU44	</option>
-<option>	OKUP44	</option>
-<option>	PK44	</option>
-<option>	POKU44	</option>
-<option>        POP44   </option>
-<option>        ZA111   </option>
-<option>	ZK44	</option>
-<option>	ZKB44	</option>
-<option>	ZKBGP44	</option>
-<option>	ZKBIG44	</option>
-<option>	ZKE44	</option>
-<option>	ZKI44	</option>
-<option>	ZKK44	</option>
-<option>	ZKKD44	</option>
-<option>	ZKKDP44	</option>
-<option>	ZKKP44	</option>
-<option>	ZKKU44	</option>
-<option>	ZKKUP44	</option>
-<option>	ZKOO44	</option>
-<option>	ZKOP44	</option>
-<option>	ZKP44	</option>
-<option>	ZP44	</option>
-<option>	ZPP44	</option>
-<option>	ОКА44	</option>
- </datalist>'.
-	'Метаданные:<input name="metatag" value="'.htmlspecialchars($metatag).'" '.$inputstyle.
-	'Обьект закупки:<input name="subject" value="'.htmlspecialchars($purname).'" '.$inputstyle.
-	'<p>Процент снижения НМЦК(Цены единицы) от:<input name="mindiscount" value="'.$mindiscount.'" '.$inputstyle.
-	'До:<input name="maxdiscount" value="'.$maxdiscount.'" '.$inputstyle.
-	'Номер закупки:<input name="purnumber" value="'.$purnumber.'" '.$inputstyle.
-	'<p>'.
-	'Дата закупки от:<input type="date" name="mindate" value="'.$mindate.'" '.$inputstyle.
-	'До:<input name="maxdate" type="date" value="'.$maxdate.'" '.$inputstyle.
-
-' ИНН Заказчика/(разместителя заказа):<input name="cinn" value="'.$cinn.'" '.$inputstyle.
-' ИНН Исполнителя:<input name="iinn" value="'.$iinn.'" '.$inputstyle.'<br><br>
-        Вывести список не более чем из <input name="maxlist" value="'.$maxlist.'"'.$inputstyle.' строк
-        <input type=submit value="Найти" formaction="/meta.php" '.$submitstyle."\n".
-        '<input type=button value="Cкачать результат" OnClick="document.location.href=\''.$myurl.'&download=1\';" '.$submitstyle.
-'</form>';
- ob_end_flush();
-} else  //download mode
- {
-    header("Content-Disposition: attachment; filename=purchases.xls");  
-    header("Content-type: application/octet-stream");
-    ob_end_clean();
-    echo $xlshdr;
- }
-echo "<table border=1 cellspacing=0 cellpadding=0>";
 if (($xcid=='')and($gid=='')) 
-
 
    {  $if1=''; if (($mindiscount!='')&&($mindiscount!="''")) 
  //{$if1='discount>=maxprice*('.$mindiscount.'/100.0) ';};
@@ -193,6 +124,8 @@ if (($xcid=='')and($gid==''))
 //{$if2='discount<=maxprice*('.$maxdiscount.'/100.0) ';};
       $ifd1=''; if ($mindate!='') {$ifd1="a.date >="._sql_validate_value($mindate)." ";};
       $ifd2=''; if ($maxdate!='') {$ifd2="a.date <="._sql_validate_value($maxdate)." ";};
+
+
       $if3=''; if ($coid!=0) {$if3='a.coid = '.$coid;};
 
       if (($if1!='')&&($if2!='')) {$if =$if1. 'and '.$if2; } else
@@ -204,42 +137,56 @@ if (($xcid=='')and($gid==''))
       if ($purname!='') {$if=$if. " a.name like '%".to1251($purname)."%' and ";};
       if ($okpd!='') {$if=$if. " a.okpd like '%".$okpd."%' and ";};
       if ($oid!=0)   {$if=$if. ' a.oid='.$oid.' and ';};
+      if ($mincontract>0) {$if=$if.' a.discount>'.$mincontract.' and ';};
+      if ($maxcontract>0) {$if=$if.' a.discount<'.$maxcontract.' and ';};
+      if ($oktmo>0) 
+	{
+	 $if=$if. " a.coid in (select oid from orgs where orgs.oktmo like '".$oktmo."%') and ";
+	};
+	if ($cname>0) { 
+		$if=$if. " a.coid in (select oid from orgs where orgs.name like '%".to1251($cname)."%') and ";
+	  	};
+	if ($pname>0) { 
+		$if=$if. " a.oid in (select oid from orgs where orgs.name like '%".to1251($pname)."%') and ";
+		};
+
       if ($purnumber!='') {$if=$if . " a.purchasenumber='".$purnumber."' and ";};
 
       if ($ptype!='') {
-        if (strpos($ptype,'%')>0) 
+        if (strpos('!!!'.$ptype,'%')>0) 
 		{ $if=$if. " a.type like("._sql_validate_value($ptype).") and ";
 		}
         else {
 		$if=$if. ' a.type='._sql_validate_value($ptype).' and ';
 	}
 
-}; //     echo $if;
+}; 
 if (strlen($metatag)>0) {
  $if = $if . "  a.purchasenumber in ( ".
 "    select purchasenumber from
 	meta_work.dbo.Datafiles where fileid in (select [fileId] FROM [meta_work].[dbo].[Metatags] where value like '".to1251($metatag)."')) and ";
 };
-if (trim($if)=="") {$maxlist=1;};
+//if (trim($if)=="") {$maxlist=1;};
 //echo '>>'.$if.'<<';
       $sql="select top ".$maxlist. " * from (select
 a.purchasenumber,a.coid,a.maxprice,a.date,a.status,a.cphone,a.cemail,a.lot,a.discount,a.offers,a.rejected,a.okpd,a.type,a.oid,a.name,a.percents,orgs.inn,orgs.name as oname,o2.inn as oinn,o2.name as o2name,p.sum,a.itemprice,
 
 iif(a.itemprice>0 and 
 
- (a.maxprice-a.discount)<a.itemprice ,
-(a.itemprice-iif(p.sum=0,maxprice,p.sum ) )/a.itemprice*100,iif(a.maxprice=0, NULL ,(a.maxprice-iif(p.sum=0,maxprice,p.sum ))/a.maxprice*100)) as percentsex
+ (((a.maxprice-a.discount)<a.itemprice)or(a.itemprice-p.sum>=0)) ,
+(a.itemprice-iif(p.sum=0,iif(a.itemprice>0,a.itemprice,a.maxprice),p.sum ) )/a.itemprice*100,iif(a.maxprice=0, NULL ,(a.maxprice-iif(p.sum=0,maxprice,p.sum ))/a.maxprice*100)) as percentsex,
+ orgs.epzorg,iif(a.offers>0,100.0*a.rejected/a.offers,NULL) as rj
  
  from (
- select *,(case when maxprice=0 then NULL else (maxprice-discount)/maxprice*100 end) as percents from zakupki_work.dbo.purchasesLT
+ select *,(case when maxprice=0 then NULL else (maxprice-discount)/maxprice*100 end) as percents from ".$zakupkibase.".dbo.purchasesLT
  ) as a 
  inner join orgs on (a.coid=orgs.oid) left join orgs o2 on (a.oid=o2.oid) 
- left join zakupki.dbo.concurents as p on (p.purchasenumber=a.purchasenumber and p.place=1 and p.active=1)
+ left join zakupki.dbo.concurents as p on (p.purchasenumber=a.purchasenumber and p.place=1 and p.active=1 and a.lot=p.lot )
  ) as a where ".$if."  a.date > '2014-01-01' order by a.date";
 
-//echo $sql.'<br>';
+//echo htmlentities($sql);
+//echo toutf($sql);
 //header	
-$p="<tr><th> Дата </th><th>Способ закупки</th><th> Закупка </th><th>№ лота</th><th>Заявок</th><th>Отклонено</th><th>ОКПД</th><th>НМЦК </th><th>Цена единицы</th><th>Цена победителя</th><th>Цена контракта</th><th>% сни-жения</th><th>Предмет закупки</th><th>ИНН Заказчика<br>(Организатора заказа)</th><th>Название заказчика<br>(разместившего заказ)</th><th>ИНН поставщика</th><th>Название поставщика</th><th>Метаданные</th></tr>";
    } else
     {
      { $sql="select * from doubleconcurents where cartelid=".$gid;};
@@ -261,7 +208,7 @@ $p="<tr><th> Дата </th><th>Способ закупки</th><th> Закупк
 //7 - lot
 //8 - discount
 //9 offers
-//10 rejected
+//10 rejected                            
 //11 - okpd
 
 //12 - type
@@ -273,62 +220,150 @@ $p="<tr><th> Дата </th><th>Способ закупки</th><th> Закупк
 //20 - цп.
 //21 - itemprice
 //22 - percentsx
- $stmt = sqlsrv_query ($db, $sql);
+//23 - c.epzorg
+//24 - rj - reject/offers
+$cnt=0;
+if (strlen(trim($if))>0)
+{
+ $stmt = sqlsrv_query ($db, $sql,array(), array("Scrollable"=>"buffered","QueryTimeout" => 300));
   if( $stmt === false ) {
     echo ($sql.'<br>');
     die(toutf(sqlsrv_errors()[0][2]));
   }
+$cnt=sql_getvalue($db,'rowcount_big()');
+} else 
+  $stmt = 0;
+//$cnt=sqlsrv_num_rows($stmt);
+$arr='';
+if ($stmt!=0)
 while($row = sqlsrv_fetch_array($stmt)) {
-{
-	$d='';
-	if ($row[3]!=NULL) {$d=$row[3]->format( 'd-m-Y' );};
-$percent='-';
-if ($row[21]==0) {$row[21]='';};
 
-$cp=$row[20];if ($cp=="") {
-	$cp="<span class='c_missed'>".$row[2]."</span>";
+if($arr) $arr.=',';
+	$d='""';
+	if ($row[3]!=NULL) {$d='new Date('.safestr($row[3]->format('Y-m-d')).')';};
+$percent='"-"';
+if ($row[21]==0) {$row[21]='""';};
+
+$cp='undefined';if (($row[20]=='')&&($row[8]>0))
+	{
+	$cp='"c_missed"';
 	$row[20]=$row[2];
 	};
 if ($row[8]!='')
-   { //$percent=$row[15];//($row[2]-$row[8])/$row[2]*100;
-		
-//      $percent=($row[2]-$row[20])/$row[2];
-//      $percent=$percent*100; //ы	
-//$percent=
+   { 
       if ($row[9]==0) {$row[9]=1;}; //для пустых выигранных заявок
 $percent=$row[22];		
       $percent=round(($percent)*100)/100;
-	$percent=$percent.'%';	
 
 	};
-$href="<a href=meta.php?cinn=".trim($row[16]).'&metatag='.urlencode($metatag).' a>'.$row[16];
-$p=$p."\n"."<tr><td>".$d. "</td><td>".
-  $row[12]."</td><td>".
-  "<a href=https://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=".toutf($row[0]). ' target="_blank">&nbsp;'.toutf($row[0])."</a></td><td>".
-  $row[7]."</td><td>". //lot
-  
-  $row[9]."</td><td>". //offers
-  $row[10]."</td><td>". //rejected
-  $row[11]."</td><td>". //okpd
-  toutf($row[2])."</td><td>". //nmck
-  toutf($row[21])."</td><td>".
-  toutf($cp)."</td><td>". //сp
-  toutf($row[8])."</td><td>".
-  $percent."</td><td>".
-  toutf($row[14])."</td><td>".
-  $href."</td><td>".		//inn 
-
-  toutf($row[17])//sql_getorgname($db,$row[1])
-  ."</td><td>".
-  toutf($row[18])."</td><td>".
-  toutf($row[19])."</td><td>".getmetatags($db,$row[0],$metatag)."</td></tr>";
+$arr.='['.join(',',array('undefined',
+$d, // date
+safestr($row[12]), // type
+safestr($row[0]), // num
+safestr($row[7]), // lot
+$row[9], // offers
+$row[10], // rejected
+safestr($row[11]), // okpd
+$row[2],
+$row[21],
+$row[20],
+$row[8],
+$percent,
+safestr($row[14]),
+safestr($row[16]),
+safestr($row[17]),
+safestr($row[18]),
+safestr($row[19]),
+$row[0],
+getmetatags($db,$row[0],$metatag),
+$cp,
+safestr($row[23]),
+round($row[24]*100)/100
+)).']';
 }
-};
+//  [new Date('2019-02-15'),'EPP44','0377200003719000002','',1,
+//   1,'35.14.10.000',200000,200000,
+//   200000,200000,0,'Поставка электрической энергии (мощности)','0411099187',
+//   'БЮДЖЕТНОЕ УЧРЕЖДЕНИЕ РЕСПУБЛИКИ АЛТАЙ "РЕСПУБЛИКАНСКАЯ ДЕТСКАЯ БИБЛИОТЕКА"','2224103849','" Алтайэнергосбыт "','0377200003719000002',
+//   [
+//    ['81D6D6CE43C6003EE0530A86121F10AF','gos_bud_/Приложение №02 Договорные величины_свыше_ЦК_5,6.xls','Company','Алтайэнерго'],
+//    ['81D6D6CE43C6003EE0530A86121F10AF','gos_bud_/Приложение №07 Акт учета почасовок для 3-6 ЦК.xls','Company','Алтайэнерго']
+//   ],
+//   'c_missed'
+//   ],
 
-//    die( print_r( sqlsrv_errors(), true));
-$p=$p."</table></body></html>";
-echo $p;
-// print_r($row);
+print "<script>var arr=[$arr];
+var xlshdr='".str_replace("\n","\\n",str_replace("\r",'',$xlshdr))."';
+</script>
+";
+//------------ Шапка сайта
+echo '<div class="hdrgray">Поиск по метаданным и закупкам</div>'; 
+echo '<form method="get" action="meta.php">
+	Способ закупки:<input name="ptype" list="ptype" value="'.$ptype.'" '.
+ inputstyle(200).
+ $ptype_datalist.
+	'Метаданные:<input name="metatag" value="'.htmlspecialchars($metatag).'" '.inputstyle(450).
+	'<div>Обьект закупки:<input name="subject" value="'.htmlspecialchars($purname).'" '.inputstyle(300).
+	'&nbsp;&nbsp;ОКПД закупки:<input name="okpd" value="'.htmlspecialchars($okpd).'" '.inputstyle(150).
+	'&nbsp;&nbsp;Номер закупки:<input name="purnumber" value="'.$purnumber.'" '.inputstyle(200).
+	'</div>'.
+	'<p>Процент снижения НМЦК(Цены единицы) от:<input name="mindiscount" value="'.$mindiscount.'" '.$inputstyle.
+	'&nbsp;&nbsp;До:<input name="maxdiscount" value="'.$maxdiscount.'" '.$inputstyle.
+	
+
+	'<div>'.
+	'Дата закупки от:<input type="date" name="mindate" value="'.$mindate.'" '.$inputstyle.
+	'До:<input name="maxdate" type="date" value="'.$maxdate.'" '.$inputstyle.
+	' Cумма контракта(ов) от:<input name="mincp" value="'.$mincontract.'" '.$inputstyle.
+	'&nbsp;&nbsp;До:<input name="maxcp" value="'.$maxcontract.'" '.$inputstyle.
+
+
+'</div>
+  <div> ИНН Заказчика/(организатора закупки):<input name="cinn" value="'.$cinn.'" '.$inputstyle.
+	'&nbsp;Название <input name="cname" value="'.$cname.'" '.inputstyle(500).
+'</div>
+<div style="display:flex;align-items:center;">ОКТМО:<div><div class="oktmoContainer oktmoStyle" id="oktmo">
+    <input type="text" id="oktmotext" placeholder=" " autocomplete="off" oninput="searchoktmo(this)">
+    <button type="button" class="ddcleadButt" onclick="document.getElementById(\'oktmotext\').value=\'\';document.getElementById(\'oktmovalue\').value=\'\';">&times;</button>
+    <button type="button" class="ddbutt oktmoStyle" onclick="toggleoktmo()"><div class="arrow-down"/></button>
+    <input type="hidden" id="oktmovalue" name="oktmo" placeholder=" " value="'.$oktmo.'">
+</div>
+<div id="oktmosearch" class="oktmopanel"><ul id="ulOKTMO"></ul></div></div></div>
+
+<div> ИНН Поставщика:          <input name="iinn" value="'.$iinn.'" '.$inputstyle.
+	'&nbsp;Название <input name="pname" value="'.$pname.'" '.inputstyle(500).
+'</div><br> Вывести список не более чем из <input name="maxlist" value="'.$maxlist.'"'.$inputstyle.' строк
+
+        <input type=submit value="Найти" formaction="meta.php" '.$submitstyle."\n".
+        '<input type=button value="Cкачать результат" OnClick="downloadxl();" '.$submitstyle.
+'</form>найдено '.$cnt.' записей<br>';
+ ob_end_flush();
+
+?>
+<table id="ress" border=1 cellspacing=0 cellpadding=0>
+<thead>
+<th class="sort sortable" fid=1 template="formatDate(v)">Дата&nbsp;&nbsp;</th>
+<th class="sort sortable" fid=2>Способ закупки&nbsp;&nbsp;</th>
+<th class="sort sortable" fid=3 template="`<a target='_blank' href='https://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=${v}' target='_blank'>&nbsp;${v}</a>`">№ закупки</th>
+<th class="sort sortable" fid=4>№ лота&nbsp;&nbsp;</th>
+<th class="sort num sortable" fid=5>Количество заявок&nbsp;&nbsp;</th>
+<th class="sort num sortable" fid=6>Отклонено&nbsp;&nbsp;&nbsp;&nbsp;<span></th>
+<th class="sort num sortable" fid=22 template="formatPercent(v)">% отклоненных&nbsp;&nbsp;&nbsp;&nbsp;<span></th>
+<th class="sort sortable" fid=7>ОКПД(2)&nbsp;&nbsp;</th>
+<th class="sort num sortable" fid=8>НМЦК&nbsp;&nbsp;<span></th>
+<th class="sort num sortable" fid=9 template="`<span${e[20]?' class='+e[20]:''}>${v?v:'-'}</span>`">Цена единицы&nbsp;&nbsp;</th>
+<th class="sort num sortable" fid=10>Цена победителя</th>
+<th class="sort num sortable" fid=11 template="v>0?`<a href='${baseurl}contractsex.php?purnumber=${e[3]}'>${v}</a>`:'-'">Цена контракта</th>
+<th class="sort num sortable" fid=12 template="formatPercent(v)">% сни-жения</th>
+<th class="sort sortable" fid=13>Предмет закупки</th>
+<th class="sort sortable" fid=14 template="orgsEx(v)">ИНН Заказчика<br>(Организатора закупки)</th>
+<th class="sort sortable" fid=15 template="e[21]?`<a target='_blank' href='https://zakupki.gov.ru/epz/organization/view/info.html?organizationCode=${e[21]}'>${v}</a>`:v">Заказчик<br>(организатор закупки)</th>
+<th class="sort sortable" fid=16 template="orgsEx(v)">ИНН поставщика</th>
+<th class="sort sortable" fid=17>Поставщик</th>
+<th template="metas(e[19],e[3])">Метаданные</th></thead>
+<tbody id="bress"/>
+</table>
+<?php
 include "footer.php";
  sql_close($db);
 ?>

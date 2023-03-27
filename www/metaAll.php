@@ -84,10 +84,8 @@ $res=$res.'</table>';
  $p = '';
 // print_r($db);
 //echo $purnumber.'<br>';
-echo "<table border=1 cellspacing=0 cellpadding=0>".
+$p=$p. "<table border=1 cellspacing=0 cellpadding=0>".
   getmetatags($db,$purnumber)."</td></tr>";
-
-//    die( print_r( sqlsrv_errors(), true));
 $p=$p."</table></body></html>";
 echo $p;
 // print_r($row);

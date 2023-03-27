@@ -8,10 +8,12 @@
 
 function findallregs($db,$id)
 {
- $r="";
- $sql="select cnt,reg from groupregs where gid=".$id." order by reg";
+ $r="";if ($id=='') {$id='0';}
+ $sql="select cnt,reg from groupregs where reg>0 and gid=".$id." order by reg";
  $stmt = sqlsrv_query ($db, $sql);
-  if( $stmt === false ) { die( FormatErrors( sqlsrv_errors()));};
+  if( $stmt === false ) { 
+ echo $sql.'<br>';
+die( toutf(sqlsrv_errors()[0][2]));};
   while($row = sqlsrv_fetch_array($stmt)) {
       $r=$r." ".$row[1];
     };
@@ -43,10 +45,11 @@ else
  $db=sql_connect();
 if ($cid=='')                                                                                   
 {
-echo '<form method="get" action="/cartels.php">
-	Регион присутствия:<input name="region" value='.$reg.'>
-        <input type=submit value="Найти" formaction="/groups.php">
-</form>';
+echo '<div class="hdrgray">группы компаний с совпадающими контактами</div>'; 
+echo '<form method="get" action="groups.php">
+	Регион присутствия:<input name="region" value='.$reg." ".$inputstyle.
+        '&nbsp;<input type=submit value="Найти" formaction="groups.php"'.$submitstyle."\n". 
+'</form>';
 } else //Шапка картеля
 
 {
@@ -57,13 +60,13 @@ echo '<form method="get" action="/cartels.php">
  $p = '';
  $limit=5;
 // print_r($db);
-if ($page>0) {
-		echo '<strong style="color: #ff0036">Страница № ' . $page . 
-		'</strong><br />'; 
-		};
+ echo '<br>';
 if (($oid=='')&&($cid=='')&&($xoid=='')) 
 
-   {    $rr='';if ($reg>0) {$rr=' where (groups.id in (select gid from groupregs where reg='.$reg.'))';};
+   { 
+//if ($page>0) {echo '<strong style="color: #ff0036">Страница № ' . $page .'</strong>'; };
+
+    $rr='';if ($reg>0) {$rr=' where (groups.id in (select gid from groupregs where reg='.$reg.'))';};
 	  $total=sql_getcount($db,'groups '.$rr);
         $pages=ceil($total/40);$pages=$pages++;
         if ($page>$pages) {$page=1;};
@@ -82,10 +85,13 @@ if (($oid=='')&&($cid=='')&&($xoid==''))
    } else
     {
     echo "<table border=1 cellspacing=0 cellpadding=0>";	
+	
      if ($xoid>0) {$sql="select * from groups where oid=".$xoid; } else
      if ($cid=='') {$sql="exec getclusterEx ".$oid;} else
 
-     { $sql="select * from orgs where gid=".$cid;};
+     { $sql="select * from orgs where gid=".$cid;
+	echo '<tr><th>ID организации</th><th>Наименование</th><th>ИНН</th><th>E-mail</th><th>Телефон</th></tr>';
+	};
      };
 
 // echo $sql;
@@ -102,8 +108,8 @@ echo "<tr><td><a href=groups.php?cid=".toutf($row[0]).">".toutf($row[0])."</td><
      findallregs($db,$row[0])."</td></tr>";
 }else
 {
-echo "<tr><td><a href=orgsex.php?oid=".toutf($row[0]).">".toutf($row[0])."</a></td><td>".toutf($row[1])."</td><td>".toutf($row[2])."</td><td>".toutf($row[3])."</td><td>".toutf($row[4])."</td><td>".
-      findallregs($db,$row[0])."</td></tr>";
+$eml=toutf($row[3]);if (strpos('.'.$eml,'null')>0) {$eml='&nbsp;';};
+echo "<tr><td><a href=orgsex.php?oid=".toutf($row[0]).">".toutf($row[0])."</a></td><td>".toutf($row[1])."</td><td>".toutf($row[2])."</td><td>".$eml."</td><td>".toutf($row[4])."</td></tr>";
 }
 
 };

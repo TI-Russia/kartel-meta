@@ -37,33 +37,44 @@ SELECT a.foid,a.name,a.value,a.tag,b.foid,o.inn,b.name
   FROM [meta_work].[dbo].[MultiTags_z]   as a 
   inner join [meta_work].[dbo].uniquetags as b on a.value=b.value and a.tag=b.tag
   inner join zakupki.dbo.orgs as o on o.oid=b.foid
-  where a.value in (select value from [meta_work].[dbo].uniquetags)';
+  where a.value in (select value from [meta_work].[dbo].uniquetags)'
+  ;
+ $sql='
+ select count(*) as name,1,c.value,tag,oid2,inn2,name2 from
 
-	echo "<table border=1 cellspacing=0 cellpadding=0>";
+(SELECT a.foid, a.name, a.value,a.tag,b.foid as oid2,o.inn as inn2 ,b.name as name2
+  FROM [meta_work].[dbo].[MultiTags_z]   as a 
+  inner join [meta_work].[dbo].uniquetags as b on a.value=b.value and a.tag=b.tag
+  inner join zakupki.dbo.orgs as o on o.oid=b.foid
+  where a.value in (select value from [meta_work].[dbo].uniquetags)
+) as c
+  group by c.value,c.tag,c.oid2,c.inn2,c.name2 '  ;
+
+echo '<div class="hdrgray">Сотрудники поставщиков в метаданных</div>'; 
+	echo "<table border=1 cellspacing=0 cellpadding=0 width='100%'>";
 echo '
  <colgroup>
-       <col span="1" style="width: 15%;">
+       <col span="1" style="width: 10%;">
        <col span="1" style="width: 20%;">
        <col span="1" style="width: 15%;">
        <col span="1" style="width: 10%;">
-       <col span="1" style="width: 20%;">
-       <col span="1" style="width: 20%;">
+       <col span="1" style="width: 40%;">
     </colgroup>';
 	switch  ($order) 
 	{
-	case 'name':{$sql=$sql .' order by a.name;';break;};
-	case 'value':{$sql=$sql .' order by a.value';break;};
-	case 'metatag':{$sql=$sql .' order by a.tag';break;};
-	case 'inn':{$sql=$sql .' order by o.inn';break;};
-	case 'cname':{$sql=$sql .' order by b.name';break;};
+	case 'name':{$sql=$sql .' order by name;';break;};
+	case 'value':{$sql=$sql .' order by value';break;};
+	case 'metatag':{$sql=$sql .' order by tag';break;};
+	case 'inn':{$sql=$sql .' order by inn2';break;};
+	case 'cname':{$sql=$sql .' order by name2';break;};
 	default: ;
 	}
-	echo '<tr><td> <a href=metahitsxx.php?order=name>Заказчики</a></td>
-	<td><a href=metahitsxx.php?order=value>Метаданные</a></td>
-        <td><a href=metahitsxx.php?order=metatag>МетаТэг</a></td>
-        <td><a href=metahitsxx.php?order=inn>ИНН</a></td>
-        <td><a href=metahitsxx.php?order=cname>Название исполнителя</a></td>
-	</tr>';
+	echo '<thead><th> <a href=metahitsxx.php?order=name>Количество заказчиков</a></td>
+	<th><a href=metahitsxx.php?order=value>Метаданные</a></th>
+        <th><a href=metahitsxx.php?order=metatag>МетаТэг</a></th>
+        <th><a href=metahitsxx.php?order=inn>ИНН</a></th>
+        <th><a href=metahitsxx.php?order=cname>Поставщик</a></th>
+	</thead>';
 
   
 // echo $sql;
@@ -76,7 +87,7 @@ echo '
 while($row = sqlsrv_fetch_array($stmt)) {
 
  $url='meta.php?metatag='.urlencode(toutf($row[2])).'&oid='.toutf($row[4]);
-echo "<tr><td><a href=orgsEx.php?oid=".toutf($row[0]).">".toutf($row[1]).
+echo "<tr><td>".$row[0].
     "</td><td><a href=".$url.">".substr(toutf($row[2]),0,71)."</a></td><td>".toutf($row[3])."</td><td>".
      '<a href=orgsEx.php?oid='.toutf($row[4]).'>'.$row[5]."</a></td><td>".
      toutf($row[6]).

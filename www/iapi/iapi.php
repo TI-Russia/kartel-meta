@@ -109,6 +109,7 @@ echo '<head>
           $u=null;
           echo date(DATE_ATOM).'<br>';
           echo 'Last cron process: '.file_get_contents('cron.log');
+          echo '<table border=0><tr><td>';
           echo '<table border=1 cellpadding=9 style="text-align:center"><tr><td>User</td><td>Last active</td><td>Status</td><td>Count</td></tr>';
           $o=0;
           foreach($res as $r)
@@ -141,6 +142,7 @@ echo '<head>
           }
           if($o>0) echo '<tr><td colspan=3>OTHERS</td><td>'.number_format($o,0,'',' ').'</td></tr>';
           echo '</table><br><br>';
+  	  echo '</td><td width=50px>&nbsp;</td><td>';
           $res=get_zstat($conn);
           if($res!=null)
           {

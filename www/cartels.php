@@ -25,10 +25,11 @@ else
 //site head
 if ($cid=='')
 {
+echo '<div class="hdrgray">участники групп компаний с признаками картельного сговора</div>'; 
 echo '<form method="get" action="/cartels.php">
-	Регион присутствия:<input name="region" value='.$reg.'>
-        <input type=submit value="Найти" formaction="/cartels.php">
-</form>';
+	Регион присутствия:<input name="region" value='.$reg.' '.$inputstyle.
+        '&nbsp;<input type=submit value="Найти" formaction="cartels.php" ' .$submitstyle.
+'</form>';
 } else //Шапка картеля
 
 {
@@ -108,8 +109,7 @@ function findallregs($db,$id)
 
  $p = '';
  $limit=5;
-if ($page>0) { echo '<strong style="color: #df0000">Страница № '.$page.'</strong><br />'; 
-	     };
+//if ($page>0) { echo '<strong style="color: #df0000">Страница № '.$page.'</strong><br />';     };
 if (($oid=='')&&($cid=='')&&($xoid=='')) 
   { 
     if ($reg==0) {$total=sql_getcount($db,'cartels ');}
@@ -128,12 +128,13 @@ if (($oid=='')&&($cid=='')&&($xoid==''))
 	case 'total':{$sql='select id,oid,count,total,sum,gid,NMCKsum,name,comment from ft_getpagecartels_total('.$page.',40)';break;};
 	default: $sql='select id,oid,count,total,sum,gid,NMCKsum,name,comment from ft_getpagecartelsREG('.$page.',40,'.$reg.')';
 	}
-	echo "<tr><th>ИД Группы</th>
+	echo "<thead><th>ИД Группы</th>
 		  <th> <a href=cartels.php>ИД Картеля</a></th>
 		  <th><a href=cartels.php?order=cnt>Участники</a></th>
 		  <th><a href=cartels.php?order=total>К-во пересечений в<br>Конкурентных закупках</a></th>
 		  <th>Сумма НМЦК</th> 
-		  <th><a href=cartels.php?order=sum>Сумма контрактов в пересекающихся закупках</a></td><td>Регионы присутствия</td></tr>";
+		  <th><a href=cartels.php?order=sum>Сумма контрактов в пересекающихся закупках</a></td>
+		 <td>Регионы присутствия</td></thead>";
    } else
     {
     $n=sql_get_Gid_by_Cid($db,$cid);

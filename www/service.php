@@ -48,7 +48,7 @@ function logOpen($db,$id,$func,$done)
 function getactualData($db,$func)
  {
   $r='&nbsp';
-  $sql="select top (1) laststatus,starttime,endtime,done from workflow where pendingprocedure='".$func."' order by starttime desc";
+  $sql="select top 1 laststatus,starttime,endtime,done from workflow where pendingprocedure='".$func."' order by id desc";
   $stmt = sqlsrv_query ($db, $sql);
   if( $stmt === false ) { echo ($sql.'<br>'); die(toutf(sqlsrv_errors()[0][2])); }
    while($row = sqlsrv_fetch_array($stmt)) 
