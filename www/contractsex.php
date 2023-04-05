@@ -52,6 +52,8 @@ echo '<form method="get" action="contractsex.php">
         '&nbsp;&nbsp;<input type=submit value="Найти" formaction="contractsex.php" '.$submitstyle.
         '&nbsp;&nbsp;
         <input type=button value="Cкачать результат" OnClick="document.location.href=\''.$myurl.'&download=1\';" '.$submitstyle.
+        '&nbsp;&nbsp;
+        <input type=button value="Очистить форму" OnClick="document.location.href=\''.$_SERVER['PHP_SELF']."'\"".$submitstyle.
 '</form><br>';
  ob_end_flush();
 } else  //download mode

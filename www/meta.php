@@ -332,10 +332,11 @@ echo '<form method="get" action="meta.php">
 
 <div> ИНН Поставщика:          <input name="iinn" value="'.$iinn.'" '.$inputstyle.
 	'&nbsp;Название <input name="pname" value="'.$pname.'" '.inputstyle(500).
-'</div><br> Вывести список не более чем из <input name="maxlist" value="'.$maxlist.'"'.$inputstyle.' строк
+'</div><br> Вывести список не более чем из <input name="maxlist" value="'.$maxlist.'"'.$inputstyle.' строк &nbsp;&nbsp;&nbsp;
 
         <input type=submit value="Найти" formaction="meta.php" '.$submitstyle."\n".
-        '<input type=button value="Cкачать результат" OnClick="downloadxl();" '.$submitstyle.
+        '<input type=button value="Cкачать результат" OnClick="downloadxl();" '.$submitstyle."\n".
+        '<input type=button value="Очистить форму" OnClick="document.location.href=\''.$_SERVER['PHP_SELF']."'\"".$submitstyle.
 '</form>найдено '.$cnt.' записей<br>';
  ob_end_flush();
 

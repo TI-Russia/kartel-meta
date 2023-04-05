@@ -10,7 +10,7 @@ if(count($_GET) == 0)
   {$go='form';$params='';$oid='';$cid='';$xcid='';$mindate='';$maxdate='';$maxlist=2000;
    $mindiscount='';
    $maxdiscount='';	
-   $download=0;
+   $download=0;$pn='';
 
 } 
 else
@@ -18,14 +18,15 @@ else
    $xcid=getparm('xcid');
    $cid=getparm('cid');
    $maxlist=getparm('maxlist');
+   $pn=getparm('purchasenumber');
    if ($maxlist=='') {$maxlist=1000;};
    $mindate=getparm('mindate');
    if (strlen($mindate)<8) {$mindate='';};
    $download=getparm('download');
    $maxdate=getparm('maxdate');
    if (strlen($maxdate)<8) {$maxdate='';};
-   $mindiscount=_sql_validate_value(getparm('mindiscount'));
-   $maxdiscount=_sql_validate_value(getparm('maxdiscount'));
+   $mindiscount=getparm('mindiscount');
+   $maxdiscount=getparm('maxdiscount');
    if ($cid!='') {$gid=$cid;} else {
    $gid=getparm('gid');}
 
@@ -39,14 +40,14 @@ else
 if ($download!=1) 
 {
 echo '<form method="get" action="/concurents.php">'.
-	'Дата закупки от:<input type="date" name="mindate" value='.$mindate.'>
-	До:<input name="maxdate" type="date" value='.$maxdate.'>'.
-	'ИД Группы компаний:<input name="gid" value="'.$gid.'"><br>'.
-	'Процент снижения цены относительно НМЦК от:<input name="mindiscount" value='.$mindiscount.'>
-	До:<input name="maxdiscount" value='.$maxdiscount.'>
-	<br>'.
+	'Дата закупки от:<input type="date" name="mindate" value="'.$mindate.'" '.$inputstyle.
+	'&nbsp;До:<input name="maxdate" type="date" value="'.$maxdate.'" '.$inputstyle.
+	'&nbsp;ИД Группы компаний:<input name="gid" value="'.$gid.'" '.$inputstyle.'<br>'.
+	'Процент снижения цены относительно НМЦК от:<input name="mindiscount" value="'.$mindiscount.'" '.$inputstyle.
+	'До:<input name="maxdiscount" value="'.$maxdiscount.'" '.$inputstyle.
+	'<br>'.
 
-        'Вывести список не более чем из <input name="maxlist" value='.$maxlist.'> строк
+        'Вывести список не более чем из <input name="maxlist" value="'.$maxlist.'" '.$inputstyle.' строк
         <input type=submit value="Найти" formaction="/concurents.php" '.$submitstyle."\n".
         '<input type=button value="Cкачать результат" OnClick="document.location.href=\''.$myurl.'&download=1\';" '.$submitstyle.
 '</form>';

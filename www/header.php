@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<link rel="stylesheet" href="css/styles.css"> 
-<link rel="stylesheet" href="css/mg_style.css"> 
+<link rel="stylesheet" href="/css/styles.css"> 
+<link rel="stylesheet" href="/css/mg_style.css"> 
 <?php
 $style='
 <style type="text/css">
@@ -60,14 +60,14 @@ echo' <div class="frame-7">';
          	{echo '<img class="ts_logo" src="./images/tenderscop.svg"  alt="tenderscop-logo">
 		<div class="ts_header_deviz helios-small-description">Цифровые инструменты общественного контроля публичных закупок.</div>';
 	}
-	else echo 	'<img class="ts_logo" src="./images/kartelescop-logo.svg"  alt="kartelescop-logo">
+	else echo 	'<img class="ts_logo" src="/images/kartelescop-logo.svg"  alt="kartelescop-logo">
 			<div class="ts_header_deviz helios-small-description">Для поиска горизонтальных сговоров</div>';
 ?>
 </div>
  <div class="menu">
    <div class="rowBox">
    <div class="hdrLabel roboto-menu--small-button"><a href="about.php"><span class="menu1">О проекте</span></a></div>
-    <div class="hdrLabel roboto-menu--small-button"><a href='https://docs.google.com/forms/d/1Z-jymDu8Z01jVnH7BoQP6mQ5HYpUuZv1HB_7lXDT1CY/edit'><span class="menu1">Обратная связь</span></a>
+    <div class="hdrLabel roboto-menu--small-button"><a href='https://forms.gle/Gj8m7ARqmp7p1t5G9'><span class="menu1">Обратная связь</span></a>
     </div>
    
    <div class="hdrLabel roboto-menu--small-button">&nbsp;</a>

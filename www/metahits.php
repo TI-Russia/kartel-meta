@@ -24,7 +24,7 @@ function findallregs($db,$id)
 $oid=0;
 
 if(count($_GET) == 0) 
-  {$go='form';$params='';$oid='';$cid='';$xoid='';$page=1;$reg='';$order=''; } 
+  {$go='form';$params='';$oid='';$cid='';$xoid='';$page=1;$reg='';$order='';$sortorder=0; } 
 else
 { 
    $oid=getparm('oid');
@@ -32,7 +32,7 @@ else
    $gid=getparm('gid');
    $xoid=getparm('xoid');
    $page=getparm('page');
-   $reg=getparm('name');
+   $reg=str_replace('+',' ',getparm('name'));
 //   if ($reg=='') {$reg=0;};
         if ($page=='') {$page=1;};
 //	if ($xoid=='') {$xoid=0;};	
@@ -40,6 +40,7 @@ else
 //	if ($cid=='') {$cid=0;};
 //	if ($reg=='') {$reg=0;};
 	$order=getparm('order');
+	$sortorder=getparm('so');
 }
 
  $db=sql_connect();
@@ -63,7 +64,9 @@ if (($oid=='')&&($cid=='')&&($xoid==''))
 
         $pages=ceil($total/40);$pages=$pages++;
         if ($page>$pages) {$page=1;};
-        printpages($pages,$page,$order,$reg,'name');
+	printpages($pages,$page,$order.'&so='.$sortorder,$reg,'name');
+	if ($sortorder==0) {$so='';$sortorder=1;} else {$so='desc';$sortorder=0;};
+
 	echo "<table border=1 cellspacing=0 cellpadding=0 width=100%>";
 
 	switch  ($order) 
@@ -71,14 +74,14 @@ if (($oid=='')&&($cid=='')&&($xoid==''))
 	case 'cnt':
 	case 'value':
 	case 'name':	
-	case 'metatag':{$sql='select name,foid,cnt,value,metatag from meta_work.dbo.ft_getUsersUni('.$page.",40,'".to1251($reg)."','".$order."')" ;break;};
-	default: $sql='select name,foid,cnt,value,metatag from meta_work.dbo.ft_getUsersUni('.$page.",40,'".to1251($reg)."','name')" ;
+	case 'metatag':{$sql='select name,foid,cnt,value,metatag from meta_work.dbo.ft_getUsersUni'.$so.'('.$page.",40,'".to1251($reg)."','".$order."')" ;break;};
+	default: $sql='select name,foid,cnt,value,metatag from meta_work.dbo.ft_getUsersUni'.$so.'('.$page.",40,'".to1251($reg)."','name')" ;
 	}
         if ($reg!='') $namelink='name='.$reg.'&'; else $namelink='';
-	echo "<thead><th> <a href=metahits.php?".$namelink."order=name>Поставщик</a></th>
-	<th><a href=metahits.php?".$namelink."order=cnt>Совпадения</a></th>
-	<th><a href=metahits.php?".$namelink."order=value>Метаданные</a></th>
-        <th><a href=metahits.php?".$namelink."order=metatag>МетаТэг</a></th>
+	echo "<thead><th> <a href=metahits.php?".$namelink."order=name&so=".$sortorder.">Поставщик</a></th>
+	<th><a href=metahits.php?".$namelink."order=cnt&so=".$sortorder.">Совпадения</a></th>
+	<th><a href=metahits.php?".$namelink."order=value&so=".$sortorder.">Метаданные</a></th>
+        <th><a href=metahits.php?".$namelink."order=metatag&so=".$sortorder.">МетаТэг</a></th>
 	</thead>";
 
    };

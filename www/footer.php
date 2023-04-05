@@ -6,11 +6,11 @@
 	<table border=0 width=100%>
 	<tr><td class="footer_text roboto-text-15" width="40%" >
 	Если вы обнаружили и хотите удалить недостоверные или устаревшие данные о&nbsp;себе&nbsp;ー 
-	<a href="mailto:tenderscope@yandex.ru"><span class="ts_url roboto-text-15">напишите нам</span></a>
+	<a href="mailto:cartelescope@gmail.com"><span class="ts_url roboto-text-15">напишите нам</span></a>
 	</td><td>&nbsp;</td>
 	<td class="footer_text roboto-text-15" width="40%">
 	По всем вопросам:<br> 
-	<a href="mailto:tenderscope@yandex.ru"><span class="ts_url roboto-text-15">tenderscope@yandex.ru</span></a> 
+	<a href="mailto:cartelescope@gmail.com"><span class="ts_url roboto-text-15">cartelescope@gmail.com</span></a> 
 	
 	</td><tr></table>
 	</div>
