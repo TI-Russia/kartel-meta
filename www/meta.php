@@ -40,14 +40,15 @@ else
    $maxcontract=getparm('maxcp');
    $mincontract=getparm('mincp');
    $ptype=getparm('ptype');
-   $purnumber=getparm('purnumber');
+   $purnumber=filter_var(str_replace("-","_",getparm('purnumber')), FILTER_SANITIZE_NUMBER_INT);
    $purname=getparm('subject');
    $metatag=getparm('metatag');
    $metatag=str_replace('+',' ',$metatag);
    //delete ++ from purname
 $purname=str_replace('+',' ',$purname);
-   $iinn=getparm('iinn');
-   $cinn=getparm('cinn');	
+//   $iinn=getparm('iinn');
+   $iinn=filter_var(str_replace("-","_",getparm('iinn')), FILTER_SANITIZE_NUMBER_INT);
+   $cinn=filter_var(str_replace("-","_",getparm('cinn')), FILTER_SANITIZE_NUMBER_INT);	
    $coid=getparm('coid');  if ($coid=='') {$coid=0;};
    $oid=getparm('oid');    if ($oid=='') {$oid=0;};
    if ($gid!='') {$xcid=$gid;};
@@ -309,15 +310,11 @@ echo '<form method="get" action="meta.php">
 	'</div>'.
 	'<p>Процент снижения НМЦК(Цены единицы) от:<input name="mindiscount" value="'.$mindiscount.'" '.$inputstyle.
 	'&nbsp;&nbsp;До:<input name="maxdiscount" value="'.$maxdiscount.'" '.$inputstyle.
-	
-
 	'<div>'.
 	'Дата закупки от:<input type="date" name="mindate" value="'.$mindate.'" '.$inputstyle.
 	'До:<input name="maxdate" type="date" value="'.$maxdate.'" '.$inputstyle.
 	' Cумма контракта(ов) от:<input name="mincp" value="'.$mincontract.'" '.$inputstyle.
 	'&nbsp;&nbsp;До:<input name="maxcp" value="'.$maxcontract.'" '.$inputstyle.
-
-
 '</div>
   <div> ИНН Заказчика/(организатора закупки):<input name="cinn" value="'.$cinn.'" '.$inputstyle.
 	'&nbsp;Название <input name="cname" value="'.$cname.'" '.inputstyle(500).

@@ -13,6 +13,7 @@ else
 { 
 $id=getparm('cid');
 $oid=getparm('oid');
+if ($oid=='0') $oid='';
 $inn=getparm('iinn');
 $phone=to1251(getparm('phone'));
 $maxdate=getparm('maxdate');
