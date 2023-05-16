@@ -97,6 +97,10 @@ echo '<form method="get" action="metapairs.php">'.
         $pages=ceil($total/40);$pages=$pages++;
         if ($page>$pages) {$page=1;};
 	if ($order=='') {$order='supp';};
+        if ($inn1!='')  {   $order=$order.'&iinn='.$inn1;};
+        if ($inn2!='')  {   $order=$order.'&cinn='.$inn2;};
+	if ($cname!='')  {   $order=$order.'&cname='.$cname;};
+	if ($oktmo!='') {$order=$order.'&oktmo='.$oktmo;};
         printpages($pages,$page,$order.'&so='.$sortorder,$reg,'pname');
 	if ($sortorder==0) {$so='';$sortorder=1;} else {$so='desc';$sortorder=0;};
 	echo "<table border=1 cellspacing=0 cellpadding=0>";
@@ -110,6 +114,7 @@ echo '<form method="get" action="metapairs.php">'.
 	}
         if ($inn1!='')  {   $namelink=$namelink.'iinn='.$inn1.'&';}
         if ($inn2!='')  {   $namelink=$namelink.'cinn='.$inn2.'&';}
+	if ($oktmo!='') {   $namelink=$namelink.'oktmo='.$oktmo.'&';}
 	echo '<thead>
 	<th><a href="metapairs.php?'.$namelink.'order=inn&so='.$sortorder.'">ИНН поставщика</a></th>
 	<th><a href="metapairs.php?'.$namelink.'order=supp&so='.$sortorder.'">Название поставщика</a></th>

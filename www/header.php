@@ -1,30 +1,39 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<link rel="stylesheet" href="/css/styles.css"> 
-<link rel="stylesheet" href="/css/mg_style.css"> 
 <?php
+$myurl=$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+if (strpos($myurl,'index')>0) {
+    echo '
+        <link rel="stylesheet" href="css/mg_style.css"> 
+        <link rel="stylesheet" href="css/styles_new.css"> 
+    ';
+} else {
+    echo '
+        <link rel="stylesheet" href="/css/styles.css"> 
+        <link rel="stylesheet" href="/css/mg_style.css"> 
+    ';
+}
+
 $style='
 <style type="text/css">
 tr
 .c_red   { background-color: #FF3030;}
 .c_green { background-color: #10EF10;}
-.c_missed { background-color: #fa6600;}
-.c_blue  { background-color: #00aeef; color:#ffffff;}
+.c_missed { background-color: #f3D8D8;}'./*#fa6600;}*/
+'.c_blue  { background-color: #00aeef; color:#ffffff;}
 .c_blue a { color:#ffffff;}
 .c_blue a:hover { color:#000000;}
 }
 .c_red   { background-color: #FF3030;}
 .c_green { background-color: #10EF10;}
 span
-.c_missed { background-color: #fa6600;}
-
-</style>';
+.c_missed { background-color: #F3D8D8;}'. /*#fa6600 */
+'</style>';
  echo $style;
 if(isset($script))echo $script;
 if(!isset($onload))$onload='';
 echo "<body$onload>";
-$myurl=$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
 ?>
 </head>
 <body style="margin: 0px; background: rgb(255, 255, 255); " >
@@ -66,14 +75,13 @@ echo' <div class="frame-7">';
 </div>
  <div class="menu">
    <div class="rowBox">
-   <div class="hdrLabel roboto-menu--small-button"><a href="about.php"><span class="menu1">О проекте</span></a></div>
-    <div class="hdrLabel roboto-menu--small-button"><a href='https://forms.gle/Gj8m7ARqmp7p1t5G9'><span class="menu1">Обратная связь</span></a>
-    </div>
-   
-   <div class="hdrLabel roboto-menu--small-button">&nbsp;</a>
-	</div>
-   
-    </div> 
+
+     <div class="hdrLabel roboto-menu--small-button"><a href="about.php"><span class="menu1">О проекте</span></a></div>
+     <div class="hdrLabel roboto-menu--small-button"><a href='pdf/about_metadata.pdf'><span class="menu1">О метаданных</span></a></div>
+     <div class="hdrLabel roboto-menu--small-button"><a href='https://forms.gle/Gj8m7ARqmp7p1t5G9'><span class="menu1">Обратная связь</span></a></div>
+     <div class="hdrLabel roboto-menu--small-button"><a href="https://drive.google.com/file/d/1IhdEhwnl0bDsvCXwKRcGWfWTlrieK9Va/view?usp=share_link"><span class="menu-highlighted">Металаборатория</span></a></div>
+      
+   </div> 
  </div>
  </div>
 </div>

@@ -30,11 +30,11 @@
         <img class="arrow-black" src="images/arrow-black.svg" alt="arrow-black"></div>
   <div class="line-menu" OnClick="document.location.href=\'metahitsxx.php\'"><div class="text_label helioscond-bold-white-22px">
       <span class="helioscond-bold-log-cabin-22px">СОТРУДНИКИ ПОСТАВЩИКОВ </span>
-      <span class="helioscond-bold-cerulean-22px">В МЕТАДАНЫХ КОНКУРСОВ</span></div>
+      <span class="helioscond-bold-cerulean-22px">В МЕТАДАННЫХ КОНКУРСОВ</span></div>
 	<img class="arrow-black" src="./images/arrow-black.svg" alt="arrow-black"></div>
   <div class="line-menu" OnClick="document.location.href=\'metafun.php\'"><div class="text_label helioscond-bold-white-22px">
       <span class="helioscond-bold-log-cabin-22px"> РЕЙТИНГИ </span>
-      <span class="helioscond-bold-cerulean-22px"> МЕТАДАНЫХ </span></div>
+      <span class="helioscond-bold-cerulean-22px"> МЕТАДАННЫХ </span></div>
 	<img class="arrow-black" src="./images/arrow-black.svg" alt="arrow-black"></div>
 
 </span>
